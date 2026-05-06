@@ -87,7 +87,7 @@ export default async function handler(
     // Determine if conversation is complete
     const isComplete =
       conversationHistory.exchangeCount >= 5 &&
-      (assistantMessage.includes('I'll pass this to Todd') ||
+      (assistantMessage.includes("I'll pass this to Todd") ||
         assistantMessage.includes("He'll reach out within"));
 
     // If complete, trigger notification
