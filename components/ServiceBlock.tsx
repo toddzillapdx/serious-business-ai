@@ -5,11 +5,11 @@ interface ServiceBlockProps {
 
 export default function ServiceBlock({ headline, descriptor }: ServiceBlockProps) {
   return (
-    <div className="pb-8 mb-8 border-b border-white">
-      <h3 className="font-exo font-black text-white text-xl mb-4 tracking-tighter">
+    <div className="pb-12 border-b border-gray-700 last:border-b-0">
+      <h3 className="font-exo font-black text-white text-2xl mb-6 tracking-wide">
         {headline}
       </h3>
-      <p className="font-mono text-white text-sm leading-relaxed">
+      <p className="font-mono text-gray-300 text-base leading-relaxed">
         {descriptor}
       </p>
     </div>

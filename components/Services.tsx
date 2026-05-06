@@ -21,9 +21,9 @@ const services = [
 
 export default function Services() {
   return (
-    <section className="bg-black text-white py-20 px-8">
-      <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
+    <section className="bg-black text-white py-24 px-8">
+      <div className="max-w-4xl mx-auto">
+        <div className="grid grid-cols-1 gap-16">
           {services.map((service, idx) => (
             <ServiceBlock
               key={idx}
