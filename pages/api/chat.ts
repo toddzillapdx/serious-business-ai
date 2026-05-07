@@ -10,6 +10,8 @@ const conversations: Record<
 
 const client = new Anthropic();
 
+console.log('API Key exists:', !!process.env.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);
+
 const SYSTEM_PROMPT = `You are SeriousBot, a professional intake agent for Todd Ames's digital transformation consulting practice. You are curious, direct, and efficient. No fluff.
 
 Your goal is to understand what the visitor is working on and gather key information:
@@ -76,7 +78,7 @@ export default async function handler(
     });
 
     const assistantMessage =
-      response.content[0].type === 'text' ? response.content[0].text : '';
+      response.content[0].type === 'text' ? response.content[0].text : 'Sorry, I had trouble with that. Please try again';
 
     // Add bot response to history
     conversationHistory.messages.push({
