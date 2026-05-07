@@ -54,21 +54,37 @@ export default function ChatWindow({ onComplete }: ChatWindowProps) {
     setLoading(true);
 
     try {
+      // Build history from all messages EXCEPT the current user message being sent
       const history = updatedMessages
-  .slice(0, -1)
-  .filter((m) => m.content && m.content.trim() !== '')
-  .map((m) => ({
-    role: m.role === 'bot' ? 'assistant' : 'user',
-    content: m.content,
-  }));
+        .slice(0, -1)
+        .filter((m) => m.content && m.content.trim() !== '')
+        .map((m) => ({
+          role: m.role === 'bot' ? 'assistant' : 'user',
+          content: m.content,
+        }));
+
+      console.log('Sending message:', { message: userMessage, historyLength: history.length });
 
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: userMessage, history }),
       });
+
+      if (!response.ok) {
+        throw new Error(`API returned ${response.status}`);
+      }
+
       const data = await response.json();
-      setMessages((prev) => [...prev, { role: 'bot', content: data.reply }]);
+      
+      // Handle both 'reply' and 'message' field names for robustness
+      const botReply = data.reply || data.message;
+      
+      if (!botReply) {
+        throw new Error('API response missing reply/message field');
+      }
+
+      setMessages((prev) => [...prev, { role: 'bot', content: botReply }]);
 
       if (data.isComplete) {
         setIsComplete(true);
