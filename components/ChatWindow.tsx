@@ -6,8 +6,7 @@ interface Message {
 }
 
 interface ChatWindowProps {
-  conversationId?: string;
-  onComplete?: (transcript: string, userEmail?: string) => void;
+  onComplete?: (transcript: string) => void;
 }
 
 export default function ChatWindow({ onComplete }: ChatWindowProps) {
@@ -15,7 +14,6 @@ export default function ChatWindow({ onComplete }: ChatWindowProps) {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
-  const [conversationId, setConversationId] = useState<string>('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -26,7 +24,6 @@ export default function ChatWindow({ onComplete }: ChatWindowProps) {
     scrollToBottom();
   }, [messages]);
 
-  // Initialize conversation
   useEffect(() => {
     const initChat = async () => {
       setLoading(true);
@@ -34,10 +31,9 @@ export default function ChatWindow({ onComplete }: ChatWindowProps) {
         const response = await fetch('/api/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: '', isInitial: true }),
+          body: JSON.stringify({ isInitial: true }),
         });
         const data = await response.json();
-        setConversationId(data.conversationId);
         setMessages([{ role: 'bot', content: data.reply }]);
       } catch (error) {
         console.error('Chat init failed:', error);
@@ -45,7 +41,6 @@ export default function ChatWindow({ onComplete }: ChatWindowProps) {
         setLoading(false);
       }
     };
-
     initChat();
   }, []);
 
@@ -54,17 +49,22 @@ export default function ChatWindow({ onComplete }: ChatWindowProps) {
 
     const userMessage = input.trim();
     setInput('');
-    setMessages((prev) => [...prev, { role: 'user', content: userMessage }]);
+    const updatedMessages = [...messages, { role: 'user' as const, content: userMessage }];
+    setMessages(updatedMessages);
     setLoading(true);
 
     try {
+      const history = updatedMessages
+        .slice(0, -1)
+        .map((m) => ({
+          role: m.role === 'bot' ? 'assistant' : 'user',
+          content: m.content,
+        }));
+
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          message: userMessage,
-          conversationId,
-        }),
+        body: JSON.stringify({ message: userMessage, history }),
       });
       const data = await response.json();
       setMessages((prev) => [...prev, { role: 'bot', content: data.reply }]);
@@ -72,8 +72,7 @@ export default function ChatWindow({ onComplete }: ChatWindowProps) {
       if (data.isComplete) {
         setIsComplete(true);
         if (onComplete) {
-          const transcript = messages
-            .concat([{ role: 'user', content: userMessage }])
+          const transcript = updatedMessages
             .map((m) => `${m.role}: ${m.content}`)
             .join('\n');
           onComplete(transcript);
@@ -92,7 +91,6 @@ export default function ChatWindow({ onComplete }: ChatWindowProps) {
 
   return (
     <div className="border border-black flex flex-col h-full">
-      {/* Header */}
       <div className="bg-black text-white px-6 py-4 flex items-center justify-between border-b border-black">
         <div className="font-exo font-black text-sm">[SB]</div>
         <div className="font-mono text-xs tracking-widest">SERIOUSBOT</div>
@@ -102,7 +100,6 @@ export default function ChatWindow({ onComplete }: ChatWindowProps) {
         </div>
       </div>
 
-      {/* Messages */}
       <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-white">
         {messages.map((message, idx) => (
           <div
@@ -124,12 +121,8 @@ export default function ChatWindow({ onComplete }: ChatWindowProps) {
         {loading && (
           <div className="flex gap-1 text-black font-mono text-sm">
             <span className="animate-pulse">.</span>
-            <span className="animate-pulse" style={{ animationDelay: '0.1s' }}>
-              .
-            </span>
-            <span className="animate-pulse" style={{ animationDelay: '0.2s' }}>
-              .
-            </span>
+            <span className="animate-pulse" style={{ animationDelay: '0.1s' }}>.</span>
+            <span className="animate-pulse" style={{ animationDelay: '0.2s' }}>.</span>
           </div>
         )}
 
@@ -148,7 +141,6 @@ export default function ChatWindow({ onComplete }: ChatWindowProps) {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input */}
       {!isComplete && (
         <div className="bg-white border-t border-black p-4 flex gap-2">
           <input
@@ -156,7 +148,7 @@ export default function ChatWindow({ onComplete }: ChatWindowProps) {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-            placeholder="Type your message..."
+            placeholder="Type your reply..."
             disabled={loading}
             className="flex-1 border border-black px-4 py-3 font-mono text-sm focus:outline-none"
           />
@@ -165,7 +157,7 @@ export default function ChatWindow({ onComplete }: ChatWindowProps) {
             disabled={loading || !input.trim()}
             className="bg-black text-white px-6 py-3 font-exo font-black hover:opacity-80 disabled:opacity-50 transition"
           >
-            →
+            SEND →
           </button>
         </div>
       )}
