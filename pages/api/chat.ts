@@ -39,6 +39,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       { role: 'user', content: message }
     ];
 
+    console.log('Messages being sent:', JSON.stringify(messages));
+
     const response = await client.messages.create({
       model: 'claude-haiku-4-5-20251001',
       max_tokens: 150,
