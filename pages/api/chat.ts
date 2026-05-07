@@ -39,7 +39,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       { role: 'user', content: message }
     ];
 
-    console.log('Messages being sent:', JSON.stringify(messages));
+    console.log('Body received:', JSON.stringify({ message, history }));
+console.log('Messages being sent:', JSON.stringify(messages));
 
     const response = await client.messages.create({
       model: 'claude-haiku-4-5-20251001',
