@@ -34,10 +34,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return;
     }
 
-    const messages = [
-      ...(history || []),
-      { role: 'user', content: message }
-    ];
+    const cleanHistory = (history || []).filter(
+  (m: {role: string, content: string}) => m.role && m.content && m.content.trim() !== ''
+);
+const messages = [
+  ...cleanHistory,
+  { role: 'user' as const, content: String(message || '').trim() }
+];
 
     console.log('Body received:', JSON.stringify({ message, history }));
 console.log('Messages being sent:', JSON.stringify(messages));
