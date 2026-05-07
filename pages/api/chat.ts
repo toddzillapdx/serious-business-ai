@@ -1,4 +1,4 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+	import { NextApiRequest, NextApiResponse } from 'next';
 import { Anthropic } from '@anthropic-ai/sdk';
 
 const client = new Anthropic();
@@ -34,6 +34,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return;
     }
 
+    console.log('Body received:', JSON.stringify({ message, history }));
     const cleanHistory = (history || []).filter(
   (m: {role: string, content: string}) => m.role && m.content && m.content.trim() !== ''
 );
@@ -42,7 +43,7 @@ const messages = [
   { role: 'user' as const, content: String(message || '').trim() }
 ];
 
-    console.log('Body received:', JSON.stringify({ message, history }));
+    
 console.log('Messages being sent:', JSON.stringify(messages));
 
     const response = await client.messages.create({
