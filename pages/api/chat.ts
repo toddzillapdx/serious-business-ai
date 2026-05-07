@@ -10,7 +10,7 @@ const conversations: Record<
 
 const client = new Anthropic();
 
-console.log('API Key exists:', !!process.env.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);
+console.log('API Key exists:', !!process.env.ANTHROPIC_API_KEY);
 
 const SYSTEM_PROMPT = `You are SeriousBot, a professional intake agent for Todd Ames's digital transformation consulting practice. You are curious, direct, and efficient. No fluff.
 
