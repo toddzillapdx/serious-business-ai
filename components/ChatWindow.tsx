@@ -55,11 +55,12 @@ export default function ChatWindow({ onComplete }: ChatWindowProps) {
 
     try {
       const history = updatedMessages
-        .slice(0, -1)
-        .map((m) => ({
-          role: m.role === 'bot' ? 'assistant' : 'user',
-          content: m.content,
-        }));
+  .slice(0, -1)
+  .filter((m) => m.content && m.content.trim() !== '')
+  .map((m) => ({
+    role: m.role === 'bot' ? 'assistant' : 'user',
+    content: m.content,
+  }));
 
       const response = await fetch('/api/chat', {
         method: 'POST',
