@@ -42,7 +42,7 @@ export default async function handler(
     let conversationHistory = conversations[convoId];
 
     // Initialize if new conversation
-    if (isInitial || !conversationHistory) {
+    if (isInitial) {
       convoId = uuidv4();
       conversationHistory = {
         messages: [],
