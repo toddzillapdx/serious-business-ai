@@ -34,9 +34,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    const cleanHistory = Array.isArray(history)
+    const rawHistory = Array.isArray(history)
       ? history.filter((m: any) => m && typeof m.content === "string" && m.content.trim() !== "" && (m.role === "user" || m.role === "assistant"))
       : [];
+
+    // Anthropic requires messages to start with a user turn; drop any leading assistant messages
+    const firstUserIdx = rawHistory.findIndex((m: any) => m.role === "user");
+    const cleanHistory = firstUserIdx > 0 ? rawHistory.slice(firstUserIdx) : rawHistory;
 
     const userContent = typeof message === "string" ? message.trim() : "";
 
