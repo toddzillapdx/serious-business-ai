@@ -1,7 +1,9 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { Anthropic } from '@anthropic-ai/sdk';
+import { Resend } from 'resend';
 
 const client = new Anthropic();
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 const SYSTEM_PROMPT = `You are SeriousBot, a professional intake agent for Todd Ames digital transformation consulting practice. You are curious, direct, and efficient. No fluff.
 
@@ -102,14 +104,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         .join("\n");
 
       const conversationId = `sb-${Date.now()}`;
-      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ||
-        (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
+      const toddEmail = process.env.TODD_EMAIL || "todd@seriousbusiness.ai";
 
-      fetch(`${baseUrl}/api/notify`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ conversationId, transcript }),
-      }).catch(console.error);
+      resend.emails.send({
+        from: "SeriousBot <bot@seriousbusiness.ai>",
+        to: toddEmail,
+        subject: `New SeriousBot Conversation — ${conversationId}`,
+        html: `
+          <div style="font-family: monospace; max-width: 600px; margin: 0 auto;">
+            <h2>New SeriousBot Conversation</h2>
+            <p><strong>Conversation ID:</strong> ${conversationId}</p>
+            <hr />
+            <pre style="background: #f5f5f5; padding: 16px; overflow-x: auto; white-space: pre-wrap;">${transcript}</pre>
+            <hr />
+            <p style="font-size: 12px; color: #888;">SeriousBot — Auto-generated.</p>
+          </div>
+        `,
+      }).catch((err: any) => console.error("Email send failed:", err));
     }
 
     res.status(200).json({ reply: assistantMessage, message: assistantMessage, isComplete });
