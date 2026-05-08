@@ -9,20 +9,22 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "latest",
+    "@upstash/ratelimit": "^2.0.8",
+    "@upstash/redis": "^1.38.0",
     "next": "^14.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "@anthropic-ai/sdk": "latest",
     "resend": "^2.0.0",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
-    "tailwindcss": "^3.3.0",
-    "postcss": "^8.4.30",
-    "autoprefixer": "^10.4.14",
-    "typescript": "^5.2.0",
     "@types/node": "^20.5.0",
     "@types/react": "^18.2.0",
-    "@types/react-dom": "^18.2.0"
+    "@types/react-dom": "^18.2.0",
+    "autoprefixer": "^10.4.14",
+    "postcss": "^8.4.30",
+    "tailwindcss": "^3.3.0",
+    "typescript": "^5.2.0"
   }
 }

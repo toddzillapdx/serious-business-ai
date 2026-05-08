@@ -1,9 +1,30 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { Anthropic } from '@anthropic-ai/sdk';
 import { Resend } from 'resend';
+import { Ratelimit } from '@upstash/ratelimit';
+import { Redis } from '@upstash/redis';
 
 const client = new Anthropic();
 const resend = new Resend(process.env.RESEND_API_KEY);
+
+const redis = new Redis({
+  url: process.env.UPSTASH_REDIS_REST_URL!,
+  token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+});
+
+// 10 messages per IP per hour
+const messageLimit = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(10, '1 h'),
+  prefix: 'sb:msg',
+});
+
+// 3 completed conversations per IP per 24 hours
+const conversationLimit = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(3, '24 h'),
+  prefix: 'sb:conv',
+});
 
 const SYSTEM_PROMPT = `You are SeriousBot, a professional intake agent for Todd Ames digital transformation consulting practice. You are curious, direct, and efficient. No fluff.
 
@@ -47,6 +68,12 @@ ${transcript}`,
   }
 }
 
+function getIP(req: NextApiRequest): string {
+  const forwarded = req.headers['x-forwarded-for'];
+  const ip = typeof forwarded === 'string' ? forwarded.split(',')[0].trim() : req.socket?.remoteAddress;
+  return ip || 'unknown';
+}
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST") {
     res.status(405).json({ error: "Method not allowed" });
@@ -62,6 +89,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       message: "Hi there. I am SeriousBot. What problem are you working on right now?",
       isComplete: false,
     });
+    return;
+  }
+
+  // Rate limit: 10 messages per IP per hour
+  const ip = getIP(req);
+  const { success: msgAllowed, remaining } = await messageLimit.limit(ip);
+  if (!msgAllowed) {
+    res.status(429).json({ error: "Too many messages. Please try again later.", message: "You've sent too many messages. Please try again in an hour." });
     return;
   }
 
@@ -121,6 +156,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       assistantMessage.includes("reach out within one business day");
 
     if (isComplete) {
+      // Rate limit: 3 completed conversations per IP per 24 hours
+      const { success: convAllowed } = await conversationLimit.limit(ip);
+      if (!convAllowed) {
+        res.status(200).json({
+          reply: "It looks like you've already submitted a few times today. Todd will be in touch from your earlier conversation.",
+          message: "It looks like you've already submitted a few times today. Todd will be in touch from your earlier conversation.",
+          isComplete: false,
+        });
+        return;
+      }
+
       const transcript = messages
         .map((m: any) => `${m.role === "user" ? "Visitor" : "SeriousBot"}: ${m.content}`)
         .join("\n");
@@ -139,7 +185,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 <div style="font-size: 11px; letter-spacing: 3px; color: #999; margin-bottom: 4px;">SERIOUSBOT INTAKE</div>
                 <div style="font-size: 20px; font-weight: 900; letter-spacing: -0.5px;">New Lead</div>
               </div>
-
               <div style="border: 1px solid #0a0a0a; border-top: none; padding: 24px; margin-bottom: 24px;">
                 <table style="width: 100%; border-collapse: collapse;">
                   <tr>
@@ -156,13 +201,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                   </tr>
                 </table>
               </div>
-
               <div style="font-size: 11px; letter-spacing: 2px; color: #666; margin-bottom: 8px;">FULL TRANSCRIPT</div>
               <pre style="background: #f5f5f5; border: 1px solid #eee; padding: 20px; font-size: 12px; line-height: 1.7; white-space: pre-wrap; margin: 0 0 24px;">${transcript}</pre>
-
-              <div style="font-size: 11px; color: #999; letter-spacing: 1px;">
-                ${conversationId} · ${new Date().toISOString()}
-              </div>
+              <div style="font-size: 11px; color: #999; letter-spacing: 1px;">${conversationId} · ${new Date().toISOString()}</div>
             </div>
           `,
         });
