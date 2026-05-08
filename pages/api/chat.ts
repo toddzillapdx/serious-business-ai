@@ -12,9 +12,14 @@ const redis = new Redis({
 });
 
 async function checkLimit(key: string, limit: number, ttlSeconds: number): Promise<boolean> {
-  const count = await redis.incr(key);
-  if (count === 1) await redis.expire(key, ttlSeconds);
-  return count <= limit;
+  try {
+    const count = await redis.incr(key);
+    if (count === 1) await redis.expire(key, ttlSeconds);
+    return count <= limit;
+  } catch (err) {
+    console.error("Rate limit check failed (Redis error), allowing request:", err);
+    return true; // fail open — don't block chat if Redis is unavailable
+  }
 }
 
 const SYSTEM_PROMPT = `You are SeriousBot, a professional intake agent for Todd Ames digital transformation consulting practice. You are curious, direct, and efficient. No fluff.
