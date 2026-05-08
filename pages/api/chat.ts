@@ -180,9 +180,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const toddEmail = process.env.TODD_EMAIL || "todd@seriousbusiness.ai";
 
       console.log("[chat] Sending email, transcript length:", transcript.length);
-      buildEmailSummary(transcript).then(({ name, contact, summary }) => {
+      try {
+        const { name, contact, summary } = await buildEmailSummary(transcript);
         console.log("[chat] Email summary extracted:", { name, contact });
-        return resend.emails.send({
+        await resend.emails.send({
           from: "SeriousBot <bot@seriousbusiness.ai>",
           to: toddEmail,
           subject: `New Lead: ${name} — ${new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}`,
@@ -214,7 +215,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             </div>
           `,
         });
-      }).catch((err: any) => console.error("Email send failed:", err));
+        console.log("[chat] Email sent successfully to", toddEmail);
+      } catch (err) {
+        console.error("[chat] Email send failed:", err);
+      }
     }
 
     res.status(200).json({ reply: assistantMessage, message: assistantMessage, isComplete });
