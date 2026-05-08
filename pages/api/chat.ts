@@ -15,14 +15,14 @@ const redis = new Redis({
 // 10 messages per IP per hour
 const messageLimit = new Ratelimit({
   redis,
-  limiter: Ratelimit.slidingWindow(10, '1 h'),
+  limiter: Ratelimit.fixedWindow(10, '1 h'),
   prefix: 'sb:msg',
 });
 
 // 3 completed conversations per IP per 24 hours
 const conversationLimit = new Ratelimit({
   redis,
-  limiter: Ratelimit.slidingWindow(3, '24 h'),
+  limiter: Ratelimit.fixedWindow(3, '24 h'),
   prefix: 'sb:conv',
 });
 
