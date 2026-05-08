@@ -1,7 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { Anthropic } from '@anthropic-ai/sdk';
 import { Resend } from 'resend';
-import { Ratelimit } from '@upstash/ratelimit';
 import { Redis } from '@upstash/redis';
 
 const client = new Anthropic();
@@ -12,19 +11,11 @@ const redis = new Redis({
   token: process.env.UPSTASH_REDIS_REST_TOKEN!,
 });
 
-// 10 messages per IP per hour
-const messageLimit = new Ratelimit({
-  redis,
-  limiter: Ratelimit.fixedWindow(10, '1 h'),
-  prefix: 'sb:msg',
-});
-
-// 3 completed conversations per IP per 24 hours
-const conversationLimit = new Ratelimit({
-  redis,
-  limiter: Ratelimit.fixedWindow(3, '24 h'),
-  prefix: 'sb:conv',
-});
+async function checkLimit(key: string, limit: number, ttlSeconds: number): Promise<boolean> {
+  const count = await redis.incr(key);
+  if (count === 1) await redis.expire(key, ttlSeconds);
+  return count <= limit;
+}
 
 const SYSTEM_PROMPT = `You are SeriousBot, a professional intake agent for Todd Ames digital transformation consulting practice. You are curious, direct, and efficient. No fluff.
 
@@ -95,7 +86,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   // Rate limit: 10 messages per IP per hour
   const ip = getIP(req);
-  const { success: msgAllowed, remaining } = await messageLimit.limit(ip);
+  const msgAllowed = await checkLimit(`sb:msg:${ip}`, 10, 3600);
   if (!msgAllowed) {
     res.status(429).json({ error: "Too many messages. Please try again later.", message: "You've sent too many messages. Please try again in an hour." });
     return;
@@ -158,7 +149,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (isComplete) {
       // Rate limit: 3 completed conversations per IP per 24 hours
-      const { success: convAllowed } = await conversationLimit.limit(ip);
+      const convAllowed = await checkLimit(`sb:conv:${ip}`, 3, 86400);
       if (!convAllowed) {
         res.status(200).json({
           reply: "It looks like you've already submitted a few times today. Todd will be in touch from your earlier conversation.",
