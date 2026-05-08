@@ -150,7 +150,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const isComplete =
       assistantMessage.includes("pass this to Todd") ||
-      assistantMessage.includes("reach out within one business day");
+      assistantMessage.includes("reach out within one business day") ||
+      assistantMessage.includes("pass your information to Todd") ||
+      assistantMessage.includes("pass this along to Todd") ||
+      assistantMessage.includes("get this to Todd") ||
+      assistantMessage.includes("I'll let Todd know") ||
+      assistantMessage.includes("within one business day");
+
+    console.log("[chat] assistantMessage:", assistantMessage);
+    console.log("[chat] isComplete:", isComplete);
 
     if (isComplete) {
       // Rate limit: 3 completed conversations per IP per 24 hours
@@ -171,7 +179,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const conversationId = `sb-${Date.now()}`;
       const toddEmail = process.env.TODD_EMAIL || "todd@seriousbusiness.ai";
 
+      console.log("[chat] Sending email, transcript length:", transcript.length);
       buildEmailSummary(transcript).then(({ name, contact, summary }) => {
+        console.log("[chat] Email summary extracted:", { name, contact });
         return resend.emails.send({
           from: "SeriousBot <bot@seriousbusiness.ai>",
           to: toddEmail,
