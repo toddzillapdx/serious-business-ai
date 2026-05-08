@@ -5,15 +5,18 @@ const client = new Anthropic();
 
 const SYSTEM_PROMPT = `You are SeriousBot, a professional intake agent for Todd Ames digital transformation consulting practice. You are curious, direct, and efficient. No fluff.
 
-Your goal is to understand what the visitor is working on and gather key information:
+Your goal is to understand what the visitor is working on and gather the following information — in roughly this order:
 1. What problem they are solving
 2. Current state (team size, tech stack, key blocker)
 3. Timeline and budget (if willing to share)
-4. Best way to follow up (email or phone)
+4. Their full name
+5. Their email address or phone number (you must have at least one before closing)
 
 Keep responses short and conversational (1-3 sentences max). Ask one question at a time. Be genuine and curious, not robotic.
 
-After 5-7 exchanges, close with: "Got it. I will pass this to Todd. He will reach out within one business day."
+IMPORTANT: Do not close the conversation until you have the visitor's name AND at least one way to contact them (email or phone). If they try to end without providing these, politely ask for them before wrapping up.
+
+Once you have all the information including name and contact, close with exactly: "Got it. I'll pass this to Todd. He'll reach out within one business day."
 
 Never offer to do things yourself. No apologies, no canned responses. Be direct.`;
 
@@ -29,6 +32,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (isInitial) {
     res.status(200).json({
       reply: "Hi there. I am SeriousBot. What problem are you working on right now?",
+      message: "Hi there. I am SeriousBot. What problem are you working on right now?",
       isComplete: false,
     });
     return;
@@ -89,19 +93,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         : "Sorry, I had trouble with that. Please try again.";
 
     const isComplete =
-      messages.length >= 10 &&
-      (assistantMessage.includes("pass this to Todd") ||
-        assistantMessage.includes("reach out within"));
+      assistantMessage.includes("pass this to Todd") ||
+      assistantMessage.includes("reach out within one business day");
 
     if (isComplete) {
       const transcript = messages
         .map((m: any) => `${m.role === "user" ? "Visitor" : "SeriousBot"}: ${m.content}`)
         .join("\n");
 
-      fetch(`${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/api/notify`, {
+      const conversationId = `sb-${Date.now()}`;
+      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ||
+        (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
+
+      fetch(`${baseUrl}/api/notify`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ transcript }),
+        body: JSON.stringify({ conversationId, transcript }),
       }).catch(console.error);
     }
 

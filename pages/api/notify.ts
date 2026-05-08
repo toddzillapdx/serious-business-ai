@@ -14,10 +14,12 @@ export default async function handler(
 
   const { conversationId, transcript, userEmail } = req.body;
 
-  if (!conversationId || !transcript) {
-    res.status(400).json({ error: 'Missing conversationId or transcript' });
+  if (!transcript) {
+    res.status(400).json({ error: 'Missing transcript' });
     return;
   }
+
+  const id = conversationId || `sb-${Date.now()}`;
 
   try {
     const toddEmail = process.env.TODD_EMAIL || 'todd@seriousbusiness.ai';
@@ -26,11 +28,11 @@ export default async function handler(
     await resend.emails.send({
       from: 'SeriousBot <bot@seriousbusiness.ai>',
       to: toddEmail,
-      subject: `New SeriousBot Conversation — ${conversationId}`,
+      subject: `New SeriousBot Conversation — ${id}`,
       html: `
         <div style="font-family: monospace; max-width: 600px; margin: 0 auto;">
           <h2>New SeriousBot Conversation</h2>
-          <p><strong>Conversation ID:</strong> ${conversationId}</p>
+          <p><strong>Conversation ID:</strong> ${id}</p>
           ${userEmail ? `<p><strong>User Email:</strong> ${userEmail}</p>` : ''}
           
           <hr />
@@ -65,7 +67,7 @@ ${transcript}
       });
     }
 
-    res.status(200).json({ success: true, conversationId });
+    res.status(200).json({ success: true, conversationId: id });
   } catch (error) {
     console.error('Notification error:', error);
     res.status(500).json({ error: 'Failed to send notification' });
