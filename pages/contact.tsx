@@ -19,7 +19,20 @@ export default function Contact() {
   ]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [isComplete, setIsComplete] = useState(false);
+  const [sessionTime, setSessionTime] = useState('');
   const chatBodyRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const time = new Date().toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      timeZone: 'America/Los_Angeles',
+      hour12: true,
+    });
+    setSessionTime(time);
+    setMessages(prev => [{ ...prev[0], timestamp: time }, ...prev.slice(1)]);
+  }, []);
 
   useEffect(() => {
     if (chatBodyRef.current) {
@@ -59,6 +72,7 @@ export default function Contact() {
       };
 
       setMessages(prev => [...prev, botMessage]);
+      if (data.isComplete) setIsComplete(true);
     } catch (error) {
       console.error('Error sending message:', error);
     } finally {
@@ -137,7 +151,7 @@ export default function Contact() {
 
             {/* Chat Body */}
             <div ref={chatBodyRef} style={{ flex: 1, padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px', background: '#f5f5f5', overflowY: 'auto' }}>
-              <div style={{ fontSize: '10px', letterSpacing: '3px', color: '#666', textAlign: 'center', padding: '4px 0' }}>— SESSION STARTED · 09:42 PT —</div>
+              <div style={{ fontSize: '10px', letterSpacing: '3px', color: '#666', textAlign: 'center', padding: '4px 0' }}>{sessionTime ? `— SESSION STARTED · ${sessionTime} PT —` : '— SESSION STARTED —'}</div>
               
               {messages.map(msg => (
                 <div key={msg.id} style={{ display: 'flex', flexDirection: 'column' }}>
@@ -170,6 +184,11 @@ export default function Contact() {
             </div>
 
             {/* Chat Input */}
+            {isComplete ? (
+              <div style={{ borderTop: '1px solid #0a0a0a', padding: '20px 24px', background: '#fff', textAlign: 'center', fontFamily: "'IBM Plex Mono', monospace", fontSize: '12px', letterSpacing: '2px', color: '#666' }}>
+                Thank you, SeriousBot
+              </div>
+            ) : (
             <div style={{ display: 'flex', gap: '0', borderTop: '1px solid #0a0a0a', background: '#fff' }}>
               <input
                 type="text"
@@ -210,6 +229,7 @@ export default function Contact() {
                 Send →
               </button>
             </div>
+            )}
           </div>
         </div>
       </section>

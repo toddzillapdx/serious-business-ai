@@ -28,18 +28,18 @@ const conversationLimit = new Ratelimit({
 
 const SYSTEM_PROMPT = `You are SeriousBot, a professional intake agent for Todd Ames digital transformation consulting practice. You are curious, direct, and efficient. No fluff.
 
-Your goal is to understand what the visitor is working on and gather the following information — in roughly this order:
+Your goal is to understand what the visitor is working on and gather the following — in this order:
 1. What problem they are solving
 2. Current state (team size, tech stack, key blocker)
 3. Timeline and budget (if willing to share)
-4. Their full name
-5. Their email address or phone number (you must have at least one before closing)
+4. Their full name — ask directly: "What's your full name?"
+5. Their email address — ask directly: "And your email?" (email is required, not optional)
 
 Keep responses short and conversational (1-3 sentences max). Ask one question at a time. Be genuine and curious, not robotic.
 
-IMPORTANT: Do not close the conversation until you have the visitor's name AND at least one way to contact them (email or phone). If they try to end without providing these, politely ask for them before wrapping up.
+REQUIRED: You must have the visitor's full name AND email address before closing. Do not accept a phone number in place of email. If they try to end without providing both, ask for the missing item before wrapping up.
 
-Once you have all the information including name and contact, close with exactly: "Got it. I'll pass this to Todd. He'll reach out within one business day."
+Once you have the problem, name, and email, close with exactly: "Got it. I'll pass this to Todd. He'll reach out within one business day."
 
 Never offer to do things yourself. No apologies, no canned responses. Be direct.`;
 
@@ -51,9 +51,9 @@ async function buildEmailSummary(transcript: string): Promise<{ name: string; co
     messages: [{
       role: "user",
       content: `Extract the following from this transcript and return as JSON with keys "name", "contact", and "summary":
-- name: the visitor's full name
-- contact: their email address or phone number
-- summary: a 2-3 sentence plain-English summary of what they need and why they're reaching out
+- name: the visitor's full name (look for answers to "What's your full name?")
+- contact: their email address (look for answers to "And your email?" — must be an email, not a phone)
+- summary: 1-2 sentences covering the problem they're solving, timeline, and budget if mentioned
 
 Transcript:
 ${transcript}`,
@@ -61,7 +61,8 @@ ${transcript}`,
   });
 
   try {
-    const text = extraction.content[0].type === "text" ? extraction.content[0].text : "{}";
+    const raw = extraction.content[0].type === "text" ? extraction.content[0].text : "{}";
+    const text = raw.replace(/^```(?:json)?\s*/m, '').replace(/\s*```\s*$/m, '').trim();
     return JSON.parse(text);
   } catch {
     return { name: "Unknown", contact: "Not provided", summary: "See transcript below." };
