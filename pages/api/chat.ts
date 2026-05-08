@@ -23,8 +23,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return;
   }
 
-  const { message, history, isInitial } = req.body;
-  console.log("[chat] req.body:", JSON.stringify(req.body));
+  const body = req.body;
+  const isInitial = body.isInitial;
 
   if (isInitial) {
     res.status(200).json({
@@ -35,17 +35,38 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    const rawHistory = Array.isArray(history)
-      ? history.filter((m: any) => m && typeof m.content === "string" && m.content.trim() !== "" && (m.role === "user" || m.role === "assistant"))
-      : [];
+    // Support both payload formats:
+    // New: { message: string, history: Message[] }
+    // Old: { messages: { role: "bot"|"user", content: string }[] }
+    let userContent: string;
+    let cleanHistory: { role: "user" | "assistant"; content: string }[];
 
-    // Anthropic requires messages to start with a user turn; drop any leading assistant messages
-    const firstUserIdx = rawHistory.findIndex((m: any) => m.role === "user");
-    const cleanHistory = firstUserIdx > 0 ? rawHistory.slice(firstUserIdx) : rawHistory;
-
-    const userContent = typeof message === "string" ? message.trim() : "";
-
-    if (!userContent) {
+    if (typeof body.message === "string" && body.message.trim()) {
+      userContent = body.message.trim();
+      const rawHistory = Array.isArray(body.history)
+        ? body.history.filter((m: any) => m && typeof m.content === "string" && m.content.trim() !== "" && (m.role === "user" || m.role === "assistant"))
+        : [];
+      const firstUserIdx = rawHistory.findIndex((m: any) => m.role === "user");
+      cleanHistory = firstUserIdx > 0 ? rawHistory.slice(firstUserIdx) : rawHistory;
+    } else if (Array.isArray(body.messages) && body.messages.length >= 1) {
+      const msgs = body.messages.filter((m: any) => m && typeof m.content === "string" && m.content.trim() !== "");
+      const lastUserMsg = [...msgs].reverse().find((m: any) => m.role === "user");
+      if (!lastUserMsg) {
+        res.status(400).json({ error: "No user message found" });
+        return;
+      }
+      userContent = lastUserMsg.content.trim();
+      const lastUserIdx = msgs.lastIndexOf(lastUserMsg);
+      const rawHistory = msgs
+        .slice(0, lastUserIdx)
+        .map((m: any) => ({
+          role: (m.role === "bot" ? "assistant" : m.role) as "user" | "assistant",
+          content: m.content as string,
+        }))
+        .filter((m) => m.role === "user" || m.role === "assistant");
+      const firstUser = rawHistory.findIndex((m) => m.role === "user");
+      cleanHistory = firstUser > 0 ? rawHistory.slice(firstUser) : rawHistory;
+    } else {
       res.status(400).json({ error: "Message required" });
       return;
     }
@@ -54,8 +75,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       ...cleanHistory,
       { role: "user" as const, content: userContent }
     ];
-
-    console.log("Sending to Claude:", JSON.stringify(messages));
 
     const response = await client.messages.create({
       model: "claude-haiku-4-5-20251001",
@@ -92,4 +111,3 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     res.status(500).json({ error: "Failed to process message" });
   }
 }
-// cache bust Thu May  7 03:06:21 PM UTC 2026
