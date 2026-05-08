@@ -2,13 +2,13 @@ import Link from 'next/link';
 
 export default function Home() {
   return (
-    <div style={{ backgroundColor: '#fff', color: '#0a0a0a', fontFamily: "'IBM Plex Mono', monospace", fontSize: '14px', lineHeight: '1.6' }}>
+    <div style={{ backgroundColor: '#fff', color: '#0a0a0a', fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: '14px', lineHeight: '1.6' }}>
       {/* NAV */}
       <header style={{ height: '72px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid #ccc', background: '#fff', padding: '0 32px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-          <div style={{ width: '36px', height: '36px', background: '#000', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Exo 2', sans-serif", fontWeight: 900, fontSize: '14px', letterSpacing: '-0.5px' }}>SB</div>
+          <div style={{ width: '36px', height: '36px', background: '#000', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, fontSize: '14px', letterSpacing: '-0.5px' }}>SB</div>
           <div>
-            <div style={{ fontFamily: "'Exo 2', sans-serif", fontWeight: 900, fontSize: '16px', letterSpacing: '-0.5px' }}>SERIOUS BUSINESS</div>
+            <div style={{ fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, fontSize: '16px', letterSpacing: '-0.5px' }}>SERIOUS BUSINESS</div>
             <div style={{ fontSize: '9px', letterSpacing: '3px', color: '#666', marginTop: '2px' }}>EST. 2026 — PORTLAND, OR</div>
           </div>
         </div>
@@ -24,7 +24,7 @@ export default function Home() {
 
       {/* HERO */}
       <section style={{ padding: '80px 32px 64px', borderBottom: '1px solid #ccc', maxWidth: '1280px', margin: '0 auto' }}>
-        <h1 style={{ fontFamily: "'Exo 2', sans-serif", fontWeight: 900, fontSize: '128px', letterSpacing: '-5px', lineHeight: '0.95', marginBottom: '48px' }}>Digital transformation for businesses that actually need it<span style={{ color: '#3a3a3a' }}>.</span></h1>
+        <h1 style={{ fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, fontSize: '128px', letterSpacing: '-5px', lineHeight: '0.95', marginBottom: '48px' }}>Digital transformation for businesses that actually need it<span style={{ color: '#3a3a3a' }}>.</span></h1>
         
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '32px', marginTop: '48px', alignItems: 'end' }}>
           <p style={{ fontSize: '16px', lineHeight: '1.6', maxWidth: '60ch', color: '#0a0a0a' }}>We help mid-sized businesses and municipalities modernize how they operate — combining strategic advisory with hands-on build capability.</p>
@@ -46,15 +46,15 @@ export default function Home() {
 
         <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: '48px', alignItems: 'start' }}>
           <div style={{ borderLeft: '4px solid #0a0a0a', padding: '8px 0 8px 32px' }}>
-            <p style={{ fontFamily: "'Exo 2', sans-serif", fontSize: '36px', letterSpacing: '-1px', lineHeight: '1.2', fontWeight: 900 }}>Serious Business is a digital transformation practice for mid-sized businesses and municipalities in the Pacific Northwest — enterprise-grade thinking without the enterprise price tag, or the enterprise bureaucracy.</p>
+            <p style={{ fontFamily: "var(--font-exo2), sans-serif", fontSize: '36px', letterSpacing: '-1px', lineHeight: '1.2', fontWeight: 900 }}>Serious Business is a digital transformation practice for mid-sized businesses and municipalities in the Pacific Northwest — enterprise-grade thinking without the enterprise price tag, or the enterprise bureaucracy.</p>
           </div>
           <aside style={{ border: '1px solid #0a0a0a', padding: '32px', background: '#fff' }}>
             <div style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '3px', color: '#3a3a3a', textTransform: 'uppercase', marginBottom: '20px', paddingBottom: '16px', borderBottom: '1px solid #0a0a0a' }}>Founder</div>
             <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '14px' }}>
-              <li style={{ display: 'flex', gap: '14px', alignItems: 'flex-start' }}><span style={{ fontFamily: "'Exo 2', sans-serif", fontWeight: 900, fontSize: '14px', minWidth: '32px', color: '#0a0a0a' }}>01</span><span style={{ fontSize: '15px', lineHeight: '1.45' }}>25 years of digital experience.</span></li>
-              <li style={{ display: 'flex', gap: '14px', alignItems: 'flex-start' }}><span style={{ fontFamily: "'Exo 2', sans-serif", fontWeight: 900, fontSize: '14px', minWidth: '32px', color: '#0a0a0a' }}>02</span><span style={{ fontSize: '15px', lineHeight: '1.45' }}>Former Nike, adidas, and agency portfolio.</span></li>
-              <li style={{ display: 'flex', gap: '14px', alignItems: 'flex-start' }}><span style={{ fontFamily: "'Exo 2', sans-serif", fontWeight: 900, fontSize: '14px', minWidth: '32px', color: '#0a0a0a' }}>03</span><span style={{ fontSize: '15px', lineHeight: '1.45' }}>Innovation, engineering, and UX background.</span></li>
-              <li style={{ display: 'flex', gap: '14px', alignItems: 'flex-start' }}><span style={{ fontFamily: "'Exo 2', sans-serif", fontWeight: 900, fontSize: '14px', minWidth: '32px', color: '#0a0a0a' }}>04</span><span style={{ fontSize: '15px', lineHeight: '1.45' }}>2 patents.</span></li>
+              <li style={{ display: 'flex', gap: '14px', alignItems: 'flex-start' }}><span style={{ fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, fontSize: '14px', minWidth: '32px', color: '#0a0a0a' }}>01</span><span style={{ fontSize: '15px', lineHeight: '1.45' }}>25 years of digital experience.</span></li>
+              <li style={{ display: 'flex', gap: '14px', alignItems: 'flex-start' }}><span style={{ fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, fontSize: '14px', minWidth: '32px', color: '#0a0a0a' }}>02</span><span style={{ fontSize: '15px', lineHeight: '1.45' }}>Former Nike, adidas, and agency portfolio.</span></li>
+              <li style={{ display: 'flex', gap: '14px', alignItems: 'flex-start' }}><span style={{ fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, fontSize: '14px', minWidth: '32px', color: '#0a0a0a' }}>03</span><span style={{ fontSize: '15px', lineHeight: '1.45' }}>Innovation, engineering, and UX background.</span></li>
+              <li style={{ display: 'flex', gap: '14px', alignItems: 'flex-start' }}><span style={{ fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, fontSize: '14px', minWidth: '32px', color: '#0a0a0a' }}>04</span><span style={{ fontSize: '15px', lineHeight: '1.45' }}>2 patents.</span></li>
             </ul>
           </aside>
         </div>
@@ -78,9 +78,9 @@ export default function Home() {
             <div key={i} style={{ padding: '40px', borderRight: i % 2 === 0 ? '1px solid #3a3a3a' : 'none', borderBottom: i < 2 ? '1px solid #3a3a3a' : 'none', display: 'flex', flexDirection: 'column', gap: '24px', minHeight: '320px', background: '#0a0a0a', color: '#fff', position: 'relative' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                 <div style={{ width: '64px', height: '64px', border: '1px solid #fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>◆</div>
-                <div style={{ fontFamily: "'Exo 2', sans-serif", fontWeight: 900, fontSize: '14px', letterSpacing: '2px', color: '#999' }}>CAP / {cap.num}</div>
+                <div style={{ fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, fontSize: '14px', letterSpacing: '2px', color: '#999' }}>CAP / {cap.num}</div>
               </div>
-              <div style={{ fontFamily: "'Exo 2', sans-serif", fontWeight: 900, fontSize: '24px', letterSpacing: '-0.5px', lineHeight: '1.15' }}>{cap.title}</div>
+              <div style={{ fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, fontSize: '24px', letterSpacing: '-0.5px', lineHeight: '1.15' }}>{cap.title}</div>
               <div style={{ fontSize: '14px', lineHeight: '1.6', color: '#ccc' }}>{cap.desc}</div>
             </div>
           ))}
@@ -103,8 +103,8 @@ export default function Home() {
             { num: '04', title: 'Operate', desc: 'Optional retainer for ongoing operations, observability, and AI augmentation as your needs evolve.' }
           ].map((step, i) => (
             <div key={i} style={{ padding: '32px 24px', borderRight: i < 3 ? '1px solid #0a0a0a' : 'none', position: 'relative', minHeight: '240px', display: 'flex', flexDirection: 'column' }}>
-              <div style={{ fontFamily: "'Exo 2', sans-serif", fontWeight: 900, fontSize: '48px', letterSpacing: '-2px', lineHeight: '1', color: '#0a0a0a' }}>{step.num}</div>
-              <div style={{ fontFamily: "'Exo 2', sans-serif", fontWeight: 900, fontSize: '18px', letterSpacing: '-0.3px', marginTop: '16px', textTransform: 'uppercase' }}>{step.title}</div>
+              <div style={{ fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, fontSize: '48px', letterSpacing: '-2px', lineHeight: '1', color: '#0a0a0a' }}>{step.num}</div>
+              <div style={{ fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, fontSize: '18px', letterSpacing: '-0.3px', marginTop: '16px', textTransform: 'uppercase' }}>{step.title}</div>
               <p style={{ fontSize: '13px', color: '#666', lineHeight: '1.55', marginTop: '12px' }}>{step.desc}</p>
             </div>
           ))}
@@ -119,19 +119,19 @@ export default function Home() {
           <div style={{ fontSize: '11px', letterSpacing: '3px', color: '#999', textAlign: 'right', textTransform: 'uppercase' }}>The Manifesto</div>
         </div>
 
-        <p style={{ fontFamily: "'Exo 2', sans-serif", fontWeight: 900, fontSize: '88px', letterSpacing: '-3px', lineHeight: '1.0', marginBottom: '64px' }}>Enterprise-grade<br />thinking. <span style={{ color: '#888' }}>Without<br />the enterprise<br />bureaucracy.</span></p>
+        <p style={{ fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, fontSize: '88px', letterSpacing: '-3px', lineHeight: '1.0', marginBottom: '64px' }}>Enterprise-grade<br />thinking. <span style={{ color: '#888' }}>Without<br />the enterprise<br />bureaucracy.</span></p>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '48px', borderTop: '1px solid #3a3a3a', paddingTop: '48px' }}>
           <div>
-            <h4 style={{ fontFamily: "'Exo 2', sans-serif", fontWeight: 900, fontSize: '14px', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '16px', color: '#fff' }}>— Ship, Don't Slide</h4>
+            <h4 style={{ fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, fontSize: '14px', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '16px', color: '#fff' }}>— Ship, Don't Slide</h4>
             <p style={{ fontSize: '14px', lineHeight: '1.65', color: '#ccc' }}>Decks don't run in production. We deliver working systems on a clock — measured in weeks, not quarters. The work is the deliverable.</p>
           </div>
           <div>
-            <h4 style={{ fontFamily: "'Exo 2', sans-serif", fontWeight: 900, fontSize: '14px', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '16px', color: '#fff' }}>— Practical Over Performative</h4>
+            <h4 style={{ fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, fontSize: '14px', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '16px', color: '#fff' }}>— Practical Over Performative</h4>
             <p style={{ fontSize: '14px', lineHeight: '1.65', color: '#ccc' }}>No AI theater. No buzzword bingo. Every tool we ship has to earn its keep against the operation it's meant to improve.</p>
           </div>
           <div>
-            <h4 style={{ fontFamily: "'Exo 2', sans-serif", fontWeight: 900, fontSize: '14px', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '16px', color: '#fff' }}>— Accountable, Named</h4>
+            <h4 style={{ fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, fontSize: '14px', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '16px', color: '#fff' }}>— Accountable, Named</h4>
             <p style={{ fontSize: '14px', lineHeight: '1.65', color: '#ccc' }}>You're hiring a practice, not a roster. The principal is on the project — start to finish — and answers the phone when something breaks.</p>
           </div>
         </div>
@@ -141,9 +141,9 @@ export default function Home() {
       <footer style={{ background: '#0a0a0a', color: '#fff', padding: '48px 32px 24px', maxWidth: '1280px', margin: '0 auto' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: '32px', borderBottom: '1px solid #3a3a3a', gap: '32px', flexWrap: 'wrap' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-            <div style={{ width: '36px', height: '36px', background: '#fff', color: '#0a0a0a', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Exo 2', sans-serif", fontWeight: 900, fontSize: '14px', letterSpacing: '-0.5px' }}>SB</div>
+            <div style={{ width: '36px', height: '36px', background: '#fff', color: '#0a0a0a', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, fontSize: '14px', letterSpacing: '-0.5px' }}>SB</div>
             <div>
-              <div style={{ fontFamily: "'Exo 2', sans-serif", fontWeight: 900, fontSize: '16px', letterSpacing: '-0.5px' }}>SERIOUS BUSINESS</div>
+              <div style={{ fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, fontSize: '16px', letterSpacing: '-0.5px' }}>SERIOUS BUSINESS</div>
               <div style={{ fontSize: '10px', letterSpacing: '4px', color: '#999', marginTop: '2px' }}>SERIOUSBUSINESS.AI</div>
             </div>
           </div>

@@ -81,13 +81,13 @@ export default function Contact() {
   };
 
   return (
-    <div style={{ backgroundColor: '#fff', color: '#0a0a0a', fontFamily: "'IBM Plex Mono', monospace", fontSize: '14px', lineHeight: '1.6' }}>
+    <div style={{ backgroundColor: '#fff', color: '#0a0a0a', fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: '14px', lineHeight: '1.6' }}>
       {/* NAV */}
       <header style={{ height: '72px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid #ccc', background: '#fff', padding: '0 32px' }}>
         <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '14px', textDecoration: 'none' }}>
-          <div style={{ width: '36px', height: '36px', background: '#000', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Exo 2', sans-serif", fontWeight: 900, fontSize: '14px', letterSpacing: '-0.5px' }}>SB</div>
+          <div style={{ width: '36px', height: '36px', background: '#000', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, fontSize: '14px', letterSpacing: '-0.5px' }}>SB</div>
           <div>
-            <div style={{ fontFamily: "'Exo 2', sans-serif", fontWeight: 900, fontSize: '16px', letterSpacing: '-0.5px' }}>SERIOUS BUSINESS</div>
+            <div style={{ fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, fontSize: '16px', letterSpacing: '-0.5px' }}>SERIOUS BUSINESS</div>
             <div style={{ fontSize: '9px', letterSpacing: '3px', color: '#666', marginTop: '2px' }}>EST. 2026 — PORTLAND, OR</div>
           </div>
         </Link>
@@ -106,27 +106,27 @@ export default function Contact() {
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '64px', alignItems: 'start' }}>
           {/* Left Column */}
           <div>
-            <h2 style={{ fontFamily: "'Exo 2', sans-serif", fontWeight: 900, fontSize: '88px', letterSpacing: '-3px', lineHeight: '0.95', marginBottom: '32px' }}>Let's<br />talk.</h2>
+            <h2 style={{ fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, fontSize: '88px', letterSpacing: '-3px', lineHeight: '0.95', marginBottom: '32px' }}>Let's<br />talk.</h2>
             
             <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '20px', marginTop: '8px' }}>
               <li style={{ display: 'flex', gap: '16px', alignItems: 'flex-start', fontSize: '16px', lineHeight: '1.4' }}>
-                <span style={{ fontFamily: "'Exo 2', sans-serif", fontWeight: 900, fontSize: '18px', color: '#0a0a0a', minWidth: '24px' }}>—</span>
+                <span style={{ fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, fontSize: '18px', color: '#0a0a0a', minWidth: '24px' }}>—</span>
                 <div>
-                  <strong style={{ fontFamily: "'Exo 2', sans-serif", fontWeight: 900, letterSpacing: '-0.3px', display: 'block', fontSize: '16px', textTransform: 'uppercase' }}>No sales pitch.</strong>
+                  <strong style={{ fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, letterSpacing: '-0.3px', display: 'block', fontSize: '16px', textTransform: 'uppercase' }}>No sales pitch.</strong>
                   <span style={{ display: 'block', fontSize: '13px', color: '#666', marginTop: '2px' }}>No funnel, no follow-up sequences.</span>
                 </div>
               </li>
               <li style={{ display: 'flex', gap: '16px', alignItems: 'flex-start', fontSize: '16px', lineHeight: '1.4' }}>
-                <span style={{ fontFamily: "'Exo 2', sans-serif", fontWeight: 900, fontSize: '18px', color: '#0a0a0a', minWidth: '24px' }}>—</span>
+                <span style={{ fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, fontSize: '18px', color: '#0a0a0a', minWidth: '24px' }}>—</span>
                 <div>
-                  <strong style={{ fontFamily: "'Exo 2', sans-serif", fontWeight: 900, letterSpacing: '-0.3px', display: 'block', fontSize: '16px', textTransform: 'uppercase' }}>No commitment.</strong>
+                  <strong style={{ fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, letterSpacing: '-0.3px', display: 'block', fontSize: '16px', textTransform: 'uppercase' }}>No commitment.</strong>
                   <span style={{ display: 'block', fontSize: '13px', color: '#666', marginTop: '2px' }}>A conversation, not a contract.</span>
                 </div>
               </li>
               <li style={{ display: 'flex', gap: '16px', alignItems: 'flex-start', fontSize: '16px', lineHeight: '1.4' }}>
-                <span style={{ fontFamily: "'Exo 2', sans-serif", fontWeight: 900, fontSize: '18px', color: '#0a0a0a', minWidth: '24px' }}>—</span>
+                <span style={{ fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, fontSize: '18px', color: '#0a0a0a', minWidth: '24px' }}>—</span>
                 <div>
-                  <strong style={{ fontFamily: "'Exo 2', sans-serif", fontWeight: 900, letterSpacing: '-0.3px', display: 'block', fontSize: '16px', textTransform: 'uppercase' }}>Just a real conversation.</strong>
+                  <strong style={{ fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, letterSpacing: '-0.3px', display: 'block', fontSize: '16px', textTransform: 'uppercase' }}>Just a real conversation.</strong>
                   <span style={{ display: 'block', fontSize: '13px', color: '#666', marginTop: '2px' }}>Tell SeriousBot what you're working on. Todd follows up personally within 48 hours.</span>
                 </div>
               </li>
@@ -138,9 +138,9 @@ export default function Contact() {
             {/* Chat Header */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 20px', borderBottom: '1px solid #0a0a0a', background: '#0a0a0a', color: '#fff' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <div style={{ width: '36px', height: '36px', background: '#fff', color: '#0a0a0a', fontFamily: "'Exo 2', sans-serif", fontWeight: 900, fontSize: '13px', display: 'flex', alignItems: 'center', justifyContent: 'center', letterSpacing: '-0.5px' }}>SB</div>
+                <div style={{ width: '36px', height: '36px', background: '#fff', color: '#0a0a0a', fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, fontSize: '13px', display: 'flex', alignItems: 'center', justifyContent: 'center', letterSpacing: '-0.5px' }}>SB</div>
                 <div>
-                  <div style={{ fontFamily: "'Exo 2', sans-serif", fontWeight: 900, fontSize: '14px', letterSpacing: '1px', textTransform: 'uppercase' }}>SeriousBot</div>
+                  <div style={{ fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, fontSize: '14px', letterSpacing: '1px', textTransform: 'uppercase' }}>SeriousBot</div>
                   <div style={{ fontSize: '10px', letterSpacing: '3px', color: '#999', marginTop: '2px' }}>CONTACT INTAKE · V1.0</div>
                 </div>
               </div>
@@ -185,7 +185,7 @@ export default function Contact() {
 
             {/* Chat Input */}
             {isComplete ? (
-              <div style={{ borderTop: '1px solid #0a0a0a', padding: '20px 24px', background: '#fff', textAlign: 'center', fontFamily: "'IBM Plex Mono', monospace", fontSize: '12px', letterSpacing: '2px', color: '#666' }}>
+              <div style={{ borderTop: '1px solid #0a0a0a', padding: '20px 24px', background: '#fff', textAlign: 'center', fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: '12px', letterSpacing: '2px', color: '#666' }}>
                 Thank you, SeriousBot
               </div>
             ) : (
@@ -200,7 +200,7 @@ export default function Contact() {
                   flex: 1,
                   border: 'none',
                   padding: '18px 20px',
-                  fontFamily: "'IBM Plex Mono', monospace",
+                  fontFamily: "var(--font-ibm-plex-mono), monospace",
                   fontSize: '14px',
                   outline: 'none',
                   background: 'transparent'
@@ -214,7 +214,7 @@ export default function Contact() {
                   color: '#fff',
                   border: 'none',
                   padding: '0 28px',
-                  fontFamily: "'IBM Plex Mono', monospace",
+                  fontFamily: "var(--font-ibm-plex-mono), monospace",
                   fontWeight: 700,
                   fontSize: '11px',
                   letterSpacing: '3px',
@@ -238,9 +238,9 @@ export default function Contact() {
       <footer style={{ background: '#0a0a0a', color: '#fff', padding: '48px 32px 24px', maxWidth: '1280px', margin: '0 auto' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: '32px', borderBottom: '1px solid #3a3a3a', gap: '32px', flexWrap: 'wrap' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-            <div style={{ width: '36px', height: '36px', background: '#fff', color: '#0a0a0a', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Exo 2', sans-serif", fontWeight: 900, fontSize: '14px', letterSpacing: '-0.5px' }}>SB</div>
+            <div style={{ width: '36px', height: '36px', background: '#fff', color: '#0a0a0a', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, fontSize: '14px', letterSpacing: '-0.5px' }}>SB</div>
             <div>
-              <div style={{ fontFamily: "'Exo 2', sans-serif", fontWeight: 900, fontSize: '16px', letterSpacing: '-0.5px' }}>SERIOUS BUSINESS</div>
+              <div style={{ fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, fontSize: '16px', letterSpacing: '-0.5px' }}>SERIOUS BUSINESS</div>
               <div style={{ fontSize: '10px', letterSpacing: '4px', color: '#999', marginTop: '2px' }}>SERIOUSBUSINESS.AI</div>
             </div>
           </div>

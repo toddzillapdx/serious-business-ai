@@ -12,8 +12,8 @@ module.exports = {
         'sb-gray': '#888888',
       },
       fontFamily: {
-        'exo': ['Exo 2', 'sans-serif'],
-        'mono': ['IBM Plex Mono', 'monospace'],
+        'exo': ['var(--font-exo2)', 'Exo 2', 'sans-serif'],
+        'mono': ['var(--font-ibm-plex-mono)', 'IBM Plex Mono', 'monospace'],
       },
       fontSize: {
         'h1': '3.5rem',

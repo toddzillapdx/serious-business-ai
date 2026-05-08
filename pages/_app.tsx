@@ -3,7 +3,7 @@ import { Exo_2, IBM_Plex_Mono } from 'next/font/google';
 import '../styles/globals.css';
 
 const exo2 = Exo_2({
-  weight: ['700', '900'],
+  weight: ['400', '700', '900'],
   subsets: ['latin'],
   variable: '--font-exo2',
   display: 'swap',
