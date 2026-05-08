@@ -24,6 +24,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   const { message, history, isInitial } = req.body;
+  console.log("[chat] req.body:", JSON.stringify(req.body));
 
   if (isInitial) {
     res.status(200).json({

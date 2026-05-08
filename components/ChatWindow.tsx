@@ -165,6 +165,8 @@ export default function ChatWindow({ onComplete }: ChatWindowProps) {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+            id="chat-input"
+            name="chat-input"
             placeholder="Type your reply..."
             disabled={loading}
             className="flex-1 border border-black px-4 py-3 font-mono text-sm focus:outline-none"
