@@ -22,6 +22,31 @@ Once you have all the information including name and contact, close with exactly
 
 Never offer to do things yourself. No apologies, no canned responses. Be direct.`;
 
+async function buildEmailSummary(transcript: string): Promise<{ name: string; contact: string; summary: string }> {
+  const extraction = await client.messages.create({
+    model: "claude-haiku-4-5-20251001",
+    max_tokens: 300,
+    system: "Extract structured data from a SeriousBot intake transcript. Respond with ONLY valid JSON, no explanation.",
+    messages: [{
+      role: "user",
+      content: `Extract the following from this transcript and return as JSON with keys "name", "contact", and "summary":
+- name: the visitor's full name
+- contact: their email address or phone number
+- summary: a 2-3 sentence plain-English summary of what they need and why they're reaching out
+
+Transcript:
+${transcript}`,
+    }],
+  });
+
+  try {
+    const text = extraction.content[0].type === "text" ? extraction.content[0].text : "{}";
+    return JSON.parse(text);
+  } catch {
+    return { name: "Unknown", contact: "Not provided", summary: "See transcript below." };
+  }
+}
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST") {
     res.status(405).json({ error: "Method not allowed" });
@@ -41,9 +66,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    // Support both payload formats:
-    // New: { message: string, history: Message[] }
-    // Old: { messages: { role: "bot"|"user", content: string }[] }
     let userContent: string;
     let cleanHistory: { role: "user" | "assistant"; content: string }[];
 
@@ -106,20 +128,44 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const conversationId = `sb-${Date.now()}`;
       const toddEmail = process.env.TODD_EMAIL || "todd@seriousbusiness.ai";
 
-      resend.emails.send({
-        from: "SeriousBot <bot@seriousbusiness.ai>",
-        to: toddEmail,
-        subject: `New SeriousBot Conversation — ${conversationId}`,
-        html: `
-          <div style="font-family: monospace; max-width: 600px; margin: 0 auto;">
-            <h2>New SeriousBot Conversation</h2>
-            <p><strong>Conversation ID:</strong> ${conversationId}</p>
-            <hr />
-            <pre style="background: #f5f5f5; padding: 16px; overflow-x: auto; white-space: pre-wrap;">${transcript}</pre>
-            <hr />
-            <p style="font-size: 12px; color: #888;">SeriousBot — Auto-generated.</p>
-          </div>
-        `,
+      buildEmailSummary(transcript).then(({ name, contact, summary }) => {
+        return resend.emails.send({
+          from: "SeriousBot <bot@seriousbusiness.ai>",
+          to: toddEmail,
+          subject: `New Lead: ${name} — ${new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}`,
+          html: `
+            <div style="font-family: monospace; max-width: 600px; margin: 0 auto; color: #0a0a0a;">
+              <div style="background: #0a0a0a; color: #fff; padding: 20px 24px; margin-bottom: 0;">
+                <div style="font-size: 11px; letter-spacing: 3px; color: #999; margin-bottom: 4px;">SERIOUSBOT INTAKE</div>
+                <div style="font-size: 20px; font-weight: 900; letter-spacing: -0.5px;">New Lead</div>
+              </div>
+
+              <div style="border: 1px solid #0a0a0a; border-top: none; padding: 24px; margin-bottom: 24px;">
+                <table style="width: 100%; border-collapse: collapse;">
+                  <tr>
+                    <td style="padding: 10px 0; border-bottom: 1px solid #eee; font-size: 11px; letter-spacing: 2px; color: #666; width: 120px;">NAME</td>
+                    <td style="padding: 10px 0; border-bottom: 1px solid #eee; font-size: 14px; font-weight: 700;">${name}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 10px 0; border-bottom: 1px solid #eee; font-size: 11px; letter-spacing: 2px; color: #666;">CONTACT</td>
+                    <td style="padding: 10px 0; border-bottom: 1px solid #eee; font-size: 14px;">${contact}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 10px 0; font-size: 11px; letter-spacing: 2px; color: #666; vertical-align: top; padding-top: 14px;">SUMMARY</td>
+                    <td style="padding: 10px 0; font-size: 14px; line-height: 1.6; padding-top: 14px;">${summary}</td>
+                  </tr>
+                </table>
+              </div>
+
+              <div style="font-size: 11px; letter-spacing: 2px; color: #666; margin-bottom: 8px;">FULL TRANSCRIPT</div>
+              <pre style="background: #f5f5f5; border: 1px solid #eee; padding: 20px; font-size: 12px; line-height: 1.7; white-space: pre-wrap; margin: 0 0 24px;">${transcript}</pre>
+
+              <div style="font-size: 11px; color: #999; letter-spacing: 1px;">
+                ${conversationId} · ${new Date().toISOString()}
+              </div>
+            </div>
+          `,
+        });
       }).catch((err: any) => console.error("Email send failed:", err));
     }
 
