@@ -13,7 +13,7 @@ export default function Contact() {
     {
       id: '1',
       role: 'bot',
-      content: 'Hi there. I\'m SeriousBot. What problem are you working on right now?',
+      content: 'Hi there. I\'m SeriousBot. Tell me what\'s not working — or what you\'re trying to build. Todd will follow up personally.',
       timestamp: '09:42'
     }
   ]);

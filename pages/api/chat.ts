@@ -82,8 +82,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if (isInitial) {
     res.status(200).json({
-      reply: "Hi there. I am SeriousBot. What problem are you working on right now?",
-      message: "Hi there. I am SeriousBot. What problem are you working on right now?",
+      reply: "Hi there. I'm SeriousBot. Tell me what's not working — or what you're trying to build. Todd will follow up personally.",
+      message: "Hi there. I'm SeriousBot. Tell me what's not working — or what you're trying to build. Todd will follow up personally.",
       isComplete: false,
     });
     return;

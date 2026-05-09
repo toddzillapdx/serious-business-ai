@@ -27,7 +27,7 @@ export default function Home() {
         <h1 style={{ fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, fontSize: '128px', letterSpacing: '-5px', lineHeight: '0.95', marginBottom: '48px' }}>Digital transformation for businesses that actually need it<span style={{ color: '#3a3a3a' }}>.</span></h1>
         
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '32px', marginTop: '48px', alignItems: 'end' }}>
-          <p style={{ fontSize: '16px', lineHeight: '1.6', maxWidth: '60ch', color: '#0a0a0a' }}>We help mid-sized businesses and municipalities modernize how they operate — combining strategic advisory with hands-on build capability.</p>
+          <p style={{ fontSize: '16px', lineHeight: '1.6', maxWidth: '60ch', color: '#0a0a0a' }}>We help mid-sized businesses modernize how they operate — combining strategic advisory with hands-on build capability. Based in Portland. Built for the Pacific Northwest and beyond.</p>
           <div style={{ border: '1px solid #0a0a0a', padding: '16px', display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '11px', minWidth: '280px', justifySelf: 'end' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', color: '#666', letterSpacing: '2px', fontSize: '10px' }}><span>STATUS</span><strong style={{ color: '#0a0a0a', fontWeight: 700 }}>ACCEPTING WORK</strong></div>
             <div style={{ display: 'flex', justifyContent: 'space-between', color: '#666', letterSpacing: '2px', fontSize: '10px' }}><span>REGION</span><strong style={{ color: '#0a0a0a', fontWeight: 700 }}>PNW + REMOTE</strong></div>
@@ -50,12 +50,7 @@ export default function Home() {
           </div>
           <aside style={{ border: '1px solid #0a0a0a', padding: '32px', background: '#fff' }}>
             <div style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '3px', color: '#3a3a3a', textTransform: 'uppercase', marginBottom: '20px', paddingBottom: '16px', borderBottom: '1px solid #0a0a0a' }}>Founder</div>
-            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '14px' }}>
-              <li style={{ display: 'flex', gap: '14px', alignItems: 'flex-start' }}><span style={{ fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, fontSize: '14px', minWidth: '32px', color: '#0a0a0a' }}>01</span><span style={{ fontSize: '15px', lineHeight: '1.45' }}>25 years of digital experience.</span></li>
-              <li style={{ display: 'flex', gap: '14px', alignItems: 'flex-start' }}><span style={{ fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, fontSize: '14px', minWidth: '32px', color: '#0a0a0a' }}>02</span><span style={{ fontSize: '15px', lineHeight: '1.45' }}>Former Nike, adidas, and agency portfolio.</span></li>
-              <li style={{ display: 'flex', gap: '14px', alignItems: 'flex-start' }}><span style={{ fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, fontSize: '14px', minWidth: '32px', color: '#0a0a0a' }}>03</span><span style={{ fontSize: '15px', lineHeight: '1.45' }}>Innovation, engineering, and UX background.</span></li>
-              <li style={{ display: 'flex', gap: '14px', alignItems: 'flex-start' }}><span style={{ fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, fontSize: '14px', minWidth: '32px', color: '#0a0a0a' }}>04</span><span style={{ fontSize: '15px', lineHeight: '1.45' }}>2 patents.</span></li>
-            </ul>
+            <p style={{ fontSize: '15px', lineHeight: '1.7', color: '#0a0a0a' }}>Todd Ames spent 25 years building digital products and leading innovation at Nike, adidas, and top creative agencies — from engineering through executive strategy. Serious Business brings that same capability to mid-sized businesses that deserve it but can&#39;t access it at enterprise scale.</p>
           </aside>
         </div>
       </section>
@@ -70,7 +65,7 @@ export default function Home() {
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0', border: '1px solid #3a3a3a' }}>
           {[
-            { num: '01', title: 'AI Augmentation', desc: 'Practical AI layered into your existing operations — not hype, not demos. Systems that work in production, on day one.' },
+            { num: '01', title: 'AI Augmentation', desc: 'Practical AI that actually runs in your business — integrated into the tools your team already uses, measured by what it saves you, not what it can demo.' },
             { num: '02', title: 'Operations Automation', desc: 'Connecting your systems, eliminating manual work, and building workflows that run without you.' },
             { num: '03', title: 'Consumer & Citizen Experience', desc: 'Modern web and mobile experiences that serve your customers or constituents the way they expect to be served.' },
             { num: '04', title: 'Data Visibility', desc: 'Real-time dashboards that turn your existing data into decisions your leadership can act on.' }
@@ -97,7 +92,7 @@ export default function Home() {
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0', border: '1px solid #0a0a0a' }}>
           {[
-            { num: '01', title: 'Diagnose', desc: 'A two-week audit of systems, data, and operations. We name the bottlenecks before we touch them.' },
+            { num: '01', title: 'Diagnose', desc: 'A two-week audit of your systems, data, and operations. You'll leave with a clear picture of where you're losing time and money — and exactly what to do about it. We name the problems before we touch them.' },
             { num: '02', title: 'Scope', desc: 'A short, written plan with cost, sequencing, and the specific outcomes we\'ll be accountable for.' },
             { num: '03', title: 'Build', desc: 'Hands-on construction. We don\'t write recommendations and walk away — we ship the thing that works.' },
             { num: '04', title: 'Operate', desc: 'Optional retainer for ongoing operations, observability, and AI augmentation as your needs evolve.' }
