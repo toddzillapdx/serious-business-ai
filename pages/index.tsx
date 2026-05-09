@@ -92,7 +92,7 @@ export default function Home() {
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0', border: '1px solid #0a0a0a' }}>
           {[
-            { num: '01', title: 'Diagnose', desc: 'A two-week audit of your systems, data, and operations. You'll leave with a clear picture of where you're losing time and money — and exactly what to do about it. We name the problems before we touch them.' },
+            { num: '01', title: 'Diagnose', desc: "A two-week audit of your systems, data, and operations. You'll leave with a clear picture of where you're losing time and money — and exactly what to do about it. We name the problems before we touch them." },
             { num: '02', title: 'Scope', desc: 'A short, written plan with cost, sequencing, and the specific outcomes we\'ll be accountable for.' },
             { num: '03', title: 'Build', desc: 'Hands-on construction. We don\'t write recommendations and walk away — we ship the thing that works.' },
             { num: '04', title: 'Operate', desc: 'Optional retainer for ongoing operations, observability, and AI augmentation as your needs evolve.' }
