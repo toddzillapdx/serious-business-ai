@@ -67,14 +67,14 @@ export default function Home() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 border border-[#3a3a3a] overflow-hidden">
           {[
-            { num: '01', title: 'AI Augmentation', desc: 'Practical AI that actually runs in your business — integrated into the tools your team already uses, measured by what it saves you, not what it can demo.' },
-            { num: '02', title: 'Operations Automation', desc: 'Connecting your systems, eliminating manual work, and building workflows that run without you.' },
-            { num: '03', title: 'Consumer & Citizen Experience', desc: 'Modern web and mobile experiences that serve your customers or constituents the way they expect to be served.' },
-            { num: '04', title: 'Data Visibility', desc: 'Real-time dashboards that turn your existing data into decisions your leadership can act on.' }
+            { num: '01', icon: '/icons/ai_augmentation.png', title: 'AI Augmentation', desc: 'Practical AI that actually runs in your business — integrated into the tools your team already uses, measured by what it saves you, not what it can demo.' },
+            { num: '02', icon: '/icons/operations_automation.png', title: 'Operations Automation', desc: 'Connecting your systems, eliminating manual work, and building workflows that run without you.' },
+            { num: '03', icon: '/icons/consumer_experience.png', title: 'Consumer & Citizen Experience', desc: 'Modern web and mobile experiences that serve your customers or constituents the way they expect to be served.' },
+            { num: '04', icon: '/icons/data_visibility.png', title: 'Data Visibility', desc: 'Real-time dashboards that turn your existing data into decisions your leadership can act on.' }
           ].map((cap, i) => (
             <div key={i} className="flex flex-col gap-6 p-8 md:p-10 border-b border-r border-[#3a3a3a]" style={{ minHeight: '260px', background: '#0a0a0a', color: '#fff', position: 'relative' }}>
               <div className="flex justify-between items-start">
-                <div style={{ width: '56px', height: '56px', border: '1px solid #fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>◆</div>
+                <img src={cap.icon} alt={cap.title} style={{ width: '56px', height: '56px', objectFit: 'contain' }} />
                 <div style={{ fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, fontSize: '14px', letterSpacing: '2px', color: '#999' }}>CAP / {cap.num}</div>
               </div>
               <div style={{ fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, fontSize: '22px', letterSpacing: '-0.5px', lineHeight: '1.15' }}>{cap.title}</div>
