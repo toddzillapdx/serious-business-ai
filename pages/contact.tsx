@@ -13,7 +13,7 @@ export default function Contact() {
     {
       id: '1',
       role: 'bot',
-      content: 'Hi there. I\'m SeriousBot. Tell me what\'s not working — or what you\'re trying to build. Todd will follow up personally.',
+      content: "Hi there. I'm SeriousBot. Tell me what's not working — or what you're trying to build. Todd will follow up personally.",
       timestamp: '09:42'
     }
   ]);
@@ -83,7 +83,7 @@ export default function Contact() {
   return (
     <div style={{ backgroundColor: '#fff', color: '#0a0a0a', fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: '14px', lineHeight: '1.6' }}>
       {/* NAV */}
-      <header style={{ height: '72px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid #ccc', background: '#fff', padding: '0 32px' }}>
+      <header className="flex items-center justify-between px-4 md:px-8" style={{ height: '72px', borderBottom: '1px solid #ccc', background: '#fff' }}>
         <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '14px', textDecoration: 'none' }}>
           <div style={{ width: '36px', height: '36px', background: '#000', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, fontSize: '14px', letterSpacing: '-0.5px' }}>SB</div>
           <div>
@@ -91,23 +91,23 @@ export default function Contact() {
             <div style={{ fontSize: '9px', letterSpacing: '3px', color: '#666', marginTop: '2px' }}>EST. 2026 — PORTLAND, OR</div>
           </div>
         </Link>
-        <nav style={{ display: 'flex', gap: '32px', alignItems: 'center', listStyle: 'none' }}>
+        <nav className="hidden md:flex" style={{ gap: '32px', alignItems: 'center', listStyle: 'none' }}>
           <a href="/#about" style={{ fontSize: '13px', color: '#0a0a0a', textDecoration: 'none' }}>About</a>
           <a href="/#caps" style={{ fontSize: '13px', color: '#0a0a0a', textDecoration: 'none' }}>Capabilities</a>
           <a href="/#services" style={{ fontSize: '13px', color: '#0a0a0a', textDecoration: 'none' }}>Services</a>
           <a href="/#manifesto" style={{ fontSize: '13px', color: '#0a0a0a', textDecoration: 'none' }}>Principles</a>
           <a href="/contact" style={{ fontSize: '13px', color: '#0a0a0a', textDecoration: 'none', borderBottom: '2px solid #000', paddingBottom: '6px' }}>Contact</a>
         </nav>
-        <a href="#contact" style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', background: '#000', color: '#fff', padding: '10px 18px', fontSize: '12px', fontWeight: 700, letterSpacing: '2px', textDecoration: 'none', textTransform: 'uppercase' }}>Let's Talk →</a>
+        <a href="#contact" className="hidden md:inline-flex" style={{ alignItems: 'center', gap: '10px', background: '#000', color: '#fff', padding: '10px 18px', fontSize: '12px', fontWeight: 700, letterSpacing: '2px', textDecoration: 'none', textTransform: 'uppercase' }}>{"Let's Talk →"}</a>
       </header>
 
       {/* CONTACT SECTION */}
-      <section style={{ padding: '96px 32px', borderBottom: '1px solid #ccc', maxWidth: '1280px', margin: '0 auto' }} id="contact">
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '64px', alignItems: 'start' }}>
+      <section className="px-4 md:px-8 py-16 md:py-24" style={{ borderBottom: '1px solid #ccc', maxWidth: '1280px', margin: '0 auto' }} id="contact">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16 items-start">
           {/* Left Column */}
           <div>
-            <h2 style={{ fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, fontSize: '88px', letterSpacing: '-3px', lineHeight: '0.95', marginBottom: '32px' }}>Let's<br />talk.</h2>
-            
+            <h2 className="text-[56px] sm:text-[72px] md:text-[88px]" style={{ fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, letterSpacing: '-3px', lineHeight: '0.95', marginBottom: '32px' }}>{"Let's"}<br />{"talk."}</h2>
+
             <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '20px', marginTop: '8px' }}>
               <li style={{ display: 'flex', gap: '16px', alignItems: 'flex-start', fontSize: '16px', lineHeight: '1.4' }}>
                 <span style={{ fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, fontSize: '18px', color: '#0a0a0a', minWidth: '24px' }}>—</span>
@@ -127,7 +127,7 @@ export default function Contact() {
                 <span style={{ fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, fontSize: '18px', color: '#0a0a0a', minWidth: '24px' }}>—</span>
                 <div>
                   <strong style={{ fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, letterSpacing: '-0.3px', display: 'block', fontSize: '16px', textTransform: 'uppercase' }}>Just a real conversation.</strong>
-                  <span style={{ display: 'block', fontSize: '13px', color: '#666', marginTop: '2px' }}>Tell SeriousBot what you're working on. Todd follows up personally within 48 hours.</span>
+                  <span style={{ display: 'block', fontSize: '13px', color: '#666', marginTop: '2px' }}>{"Tell SeriousBot what you're working on. Todd follows up personally within 48 hours."}</span>
                 </div>
               </li>
             </ul>
@@ -152,7 +152,7 @@ export default function Contact() {
             {/* Chat Body */}
             <div ref={chatBodyRef} style={{ flex: 1, padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px', background: '#f5f5f5', overflowY: 'auto' }}>
               <div style={{ fontSize: '10px', letterSpacing: '3px', color: '#666', textAlign: 'center', padding: '4px 0' }}>{sessionTime ? `— SESSION STARTED · ${sessionTime} PT —` : '— SESSION STARTED —'}</div>
-              
+
               {messages.map(msg => (
                 <div key={msg.id} style={{ display: 'flex', flexDirection: 'column' }}>
                   <div style={{
@@ -235,8 +235,8 @@ export default function Contact() {
       </section>
 
       {/* FOOTER */}
-      <footer style={{ background: '#0a0a0a', color: '#fff', padding: '48px 32px 24px', maxWidth: '1280px', margin: '0 auto' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: '32px', borderBottom: '1px solid #3a3a3a', gap: '32px', flexWrap: 'wrap' }}>
+      <footer className="px-4 md:px-8" style={{ background: '#0a0a0a', color: '#fff', paddingTop: '48px', paddingBottom: '24px', maxWidth: '1280px', margin: '0 auto' }}>
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-8" style={{ paddingBottom: '32px', borderBottom: '1px solid #3a3a3a' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
             <div style={{ width: '36px', height: '36px', background: '#fff', color: '#0a0a0a', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, fontSize: '14px', letterSpacing: '-0.5px' }}>SB</div>
             <div>
@@ -244,7 +244,7 @@ export default function Contact() {
               <div style={{ fontSize: '10px', letterSpacing: '4px', color: '#999', marginTop: '2px' }}>SERIOUSBUSINESS.AI</div>
             </div>
           </div>
-          <nav style={{ display: 'flex', gap: '32px' }}>
+          <nav className="flex flex-wrap gap-4 md:gap-8">
             <a href="/" style={{ fontSize: '12px', letterSpacing: '2px', textTransform: 'uppercase', color: '#ccc', textDecoration: 'none' }}>Home</a>
             <a href="/#about" style={{ fontSize: '12px', letterSpacing: '2px', textTransform: 'uppercase', color: '#ccc', textDecoration: 'none' }}>About</a>
             <a href="/#caps" style={{ fontSize: '12px', letterSpacing: '2px', textTransform: 'uppercase', color: '#ccc', textDecoration: 'none' }}>Capabilities</a>
@@ -253,7 +253,7 @@ export default function Contact() {
             <a href="/contact" style={{ fontSize: '12px', letterSpacing: '2px', textTransform: 'uppercase', color: '#ccc', textDecoration: 'none' }}>Contact</a>
           </nav>
         </div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: '20px', fontSize: '11px', letterSpacing: '2px', color: '#888', textTransform: 'uppercase' }}>
+        <div className="flex flex-col sm:flex-row justify-between gap-2" style={{ paddingTop: '20px', fontSize: '11px', letterSpacing: '2px', color: '#888', textTransform: 'uppercase' }}>
           <span>© 2026 Serious Business · Portland, OR</span>
           <span>Ship with Confidence.</span>
         </div>
