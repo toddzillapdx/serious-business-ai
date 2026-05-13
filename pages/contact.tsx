@@ -20,6 +20,15 @@ export default function Contact() {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
+  const [isConfirmed, setIsConfirmed] = useState(false);
+  const [confirmLoading, setConfirmLoading] = useState(false);
+  const [capturedName, setCapturedName] = useState('');
+  const [capturedEmail, setCapturedEmail] = useState('');
+  const [pendingTranscript, setPendingTranscript] = useState('');
+  const [pendingSummary, setPendingSummary] = useState('');
+  const [editMode, setEditMode] = useState(false);
+  const [editName, setEditName] = useState('');
+  const [editEmail, setEditEmail] = useState('');
   const [sessionTime, setSessionTime] = useState('');
   const chatBodyRef = useRef<HTMLDivElement>(null);
 
@@ -72,11 +81,50 @@ export default function Contact() {
       };
 
       setMessages(prev => [...prev, botMessage]);
-      if (data.isComplete) setIsComplete(true);
+      if (data.isComplete) {
+        const name = data.capturedName || '';
+        const email = data.capturedEmail || '';
+        const invalidName = !name || name === 'Unknown';
+        const invalidEmail = !email || email === 'Not provided';
+        setCapturedName(name);
+        setCapturedEmail(email);
+        setPendingTranscript(data.transcript || '');
+        setPendingSummary(data.summary || '');
+        setEditName(name);
+        setEditEmail(email);
+        if (invalidName || invalidEmail) setEditMode(true);
+        setIsComplete(true);
+      }
     } catch (error) {
       console.error('Error sending message:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleConfirm = async () => {
+    const finalName = capturedName;
+    const finalEmail = capturedEmail;
+    setConfirmLoading(true);
+    try {
+      await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          confirm: true,
+          name: finalName,
+          email: finalEmail,
+          summary: pendingSummary,
+          transcript: pendingTranscript,
+        })
+      });
+      setCapturedName(finalName);
+      setCapturedEmail(finalEmail);
+      setIsConfirmed(true);
+    } catch (error) {
+      console.error('Error confirming:', error);
+    } finally {
+      setConfirmLoading(false);
     }
   };
 
@@ -183,12 +231,8 @@ export default function Contact() {
               )}
             </div>
 
-            {/* Chat Input */}
-            {isComplete ? (
-              <div style={{ borderTop: '1px solid #0a0a0a', padding: '20px 24px', background: '#fff', textAlign: 'center', fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: '12px', letterSpacing: '2px', color: '#666' }}>
-                Thank you, SeriousBot
-              </div>
-            ) : (
+            {/* Chat Input / Confirmation / Done */}
+            {!isComplete ? (
             <div style={{ display: 'flex', gap: '0', borderTop: '1px solid #0a0a0a', background: '#fff' }}>
               <input
                 type="text"
@@ -229,6 +273,62 @@ export default function Contact() {
                 Send →
               </button>
             </div>
+            ) : isConfirmed ? (
+              <div style={{ borderTop: '1px solid #0a0a0a', padding: '16px 20px', background: '#fff', fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: '11px', letterSpacing: '2px', color: '#666', textAlign: 'center' }}>
+                SENT — TODD WILL REACH OUT TO {capturedEmail.toUpperCase()}
+              </div>
+            ) : (
+              <div style={{ borderTop: '1px solid #0a0a0a', background: '#fff', padding: '16px 20px' }}>
+                <div style={{ fontSize: '9px', letterSpacing: '3px', color: '#666', marginBottom: '10px', fontFamily: "var(--font-ibm-plex-mono), monospace" }}>CONFIRM YOUR DETAILS BEFORE SENDING</div>
+                {editMode ? (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                    <input
+                      value={editName}
+                      onChange={(e) => setEditName(e.target.value)}
+                      placeholder="Full name"
+                      style={{ border: '1px solid #ccc', padding: '8px 10px', fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: '13px', outline: 'none', width: '100%' }}
+                    />
+                    <input
+                      value={editEmail}
+                      onChange={(e) => setEditEmail(e.target.value)}
+                      placeholder="Email address"
+                      style={{ border: '1px solid #ccc', padding: '8px 10px', fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: '13px', outline: 'none', width: '100%' }}
+                    />
+                    <div style={{ display: 'flex', gap: '8px', marginTop: '2px' }}>
+                      <button
+                        onClick={() => { setCapturedName(editName); setCapturedEmail(editEmail); setEditMode(false); }}
+                        style={{ background: '#0a0a0a', color: '#fff', border: 'none', padding: '8px 16px', fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: '10px', letterSpacing: '2px', textTransform: 'uppercase', cursor: 'pointer' }}
+                      >Save</button>
+                      <button
+                        onClick={() => setEditMode(false)}
+                        style={{ background: 'transparent', color: '#666', border: '1px solid #ccc', padding: '8px 16px', fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: '10px', letterSpacing: '2px', textTransform: 'uppercase', cursor: 'pointer' }}
+                      >Cancel</button>
+                    </div>
+                  </div>
+                ) : (
+                  <div>
+                    <div style={{ display: 'flex', gap: '16px', marginBottom: '4px', alignItems: 'baseline' }}>
+                      <span style={{ fontSize: '9px', letterSpacing: '2px', color: '#999', minWidth: '44px', fontFamily: "var(--font-ibm-plex-mono), monospace" }}>NAME</span>
+                      <span style={{ fontSize: '13px', fontWeight: 700, fontFamily: "var(--font-ibm-plex-mono), monospace" }}>{capturedName || '—'}</span>
+                    </div>
+                    <div style={{ display: 'flex', gap: '16px', marginBottom: '10px', alignItems: 'baseline' }}>
+                      <span style={{ fontSize: '9px', letterSpacing: '2px', color: '#999', minWidth: '44px', fontFamily: "var(--font-ibm-plex-mono), monospace" }}>EMAIL</span>
+                      <span style={{ fontSize: '13px', fontWeight: 700, fontFamily: "var(--font-ibm-plex-mono), monospace" }}>{capturedEmail || '—'}</span>
+                    </div>
+                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                      <button
+                        onClick={handleConfirm}
+                        disabled={confirmLoading || editMode}
+                        style={{ background: '#0a0a0a', color: '#fff', border: 'none', padding: '10px 20px', fontFamily: "var(--font-ibm-plex-mono), monospace", fontWeight: 700, fontSize: '10px', letterSpacing: '2px', textTransform: 'uppercase', cursor: confirmLoading ? 'not-allowed' : 'pointer', opacity: confirmLoading ? 0.6 : 1 }}
+                      >{confirmLoading ? 'Sending…' : 'Looks good →'}</button>
+                      <button
+                        onClick={() => { setEditName(capturedName); setEditEmail(capturedEmail); setEditMode(true); }}
+                        style={{ background: 'transparent', color: '#666', border: 'none', padding: '10px 0', fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: '10px', letterSpacing: '2px', textTransform: 'uppercase', cursor: 'pointer', textDecoration: 'underline' }}
+                      >Edit</button>
+                    </div>
+                  </div>
+                )}
+              </div>
             )}
           </div>
         </div>
