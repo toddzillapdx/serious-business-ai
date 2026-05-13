@@ -216,12 +216,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     console.log("[chat] isComplete:", isComplete);
 
     if (isComplete) {
-      const transcript = messages
-        .map((m: any) => `${m.role === "user" ? "Visitor" : "SeriousBot"}: ${m.content}`)
-        .join("\n");
+      const transcript = [
+        ...messages.map((m: any) => `${m.role === "user" ? "Visitor" : "SeriousBot"}: ${m.content}`),
+        `SeriousBot: ${assistantMessage}`,
+      ].join("\n");
 
-      const { name, contact, summary } = await buildEmailSummary(transcript);
-      console.log("[chat] Completion — extracted for confirmation:", { name, contact });
+      let name = "";
+      let contact = "";
+      let summary = "";
+      try {
+        const extracted = await buildEmailSummary(transcript);
+        name = extracted.name;
+        contact = extracted.contact;
+        summary = extracted.summary;
+        console.log("[chat] Extracted for confirmation:", { name, contact });
+      } catch (err) {
+        console.error("[chat] buildEmailSummary failed, returning isComplete anyway:", err);
+      }
 
       res.status(200).json({
         reply: assistantMessage,

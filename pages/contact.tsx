@@ -82,13 +82,18 @@ export default function Contact() {
 
       setMessages(prev => [...prev, botMessage]);
       if (data.isComplete) {
-        setIsComplete(true);
-        setCapturedName(data.capturedName || '');
-        setCapturedEmail(data.capturedEmail || '');
+        const name = data.capturedName || '';
+        const email = data.capturedEmail || '';
+        const invalidName = !name || name === 'Unknown';
+        const invalidEmail = !email || email === 'Not provided';
+        setCapturedName(name);
+        setCapturedEmail(email);
         setPendingTranscript(data.transcript || '');
         setPendingSummary(data.summary || '');
-        setEditName(data.capturedName || '');
-        setEditEmail(data.capturedEmail || '');
+        setEditName(name);
+        setEditEmail(email);
+        if (invalidName || invalidEmail) setEditMode(true);
+        setIsComplete(true);
       }
     } catch (error) {
       console.error('Error sending message:', error);
@@ -98,8 +103,8 @@ export default function Contact() {
   };
 
   const handleConfirm = async () => {
-    const finalName = editMode ? editName : capturedName;
-    const finalEmail = editMode ? editEmail : capturedEmail;
+    const finalName = capturedName;
+    const finalEmail = capturedEmail;
     setConfirmLoading(true);
     try {
       await fetch('/api/chat', {
