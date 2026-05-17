@@ -2,6 +2,14 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { Anthropic } from '@anthropic-ai/sdk';
 import { Resend } from 'resend';
 import { Redis } from '@upstash/redis';
+import defaultConfig from '../../config';
+import seriousbusiness from '../../config/clients/seriousbusiness';
+import ottomanempire from '../../config/clients/ottomanempire';
+
+const CLIENT_CONFIGS: Record<string, any> = {
+  seriousbusiness,
+  ottomanempire,
+};
 
 const client = new Anthropic();
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -22,34 +30,19 @@ async function checkLimit(key: string, limit: number, ttlSeconds: number): Promi
   }
 }
 
-const SYSTEM_PROMPT = `You are SeriousBot, a professional intake agent for Todd Ames digital transformation consulting practice. You are curious, direct, and efficient. No fluff.
 
-Your goal is to understand what the visitor is working on and gather the following — in this order:
-1. What problem they are solving
-2. Current state (team size, tech stack, key blocker)
-3. Timeline and budget (if willing to share)
-4. Their full name — ask directly: "What's your full name?"
-5. Their email address — ask directly: "And your email?" (email is required, not optional)
-
-Keep responses short and conversational (1-3 sentences max). Ask one question at a time. Be genuine and curious, not robotic.
-
-REQUIRED: You must have the visitor's full name AND email address before closing. Do not accept a phone number in place of email. If they try to end without providing both, ask for the missing item before wrapping up.
-
-Once you have the problem, name, and email, close with exactly: "Got it. I'll pass this to Todd. He'll reach out within one business day."
-
-Never offer to do things yourself. No apologies, no canned responses. Be direct.`;
-
-async function buildEmailSummary(transcript: string): Promise<{ name: string; contact: string; summary: string }> {
+async function buildEmailSummary(transcript: string): Promise<{ name: string; contact: string; phone: string; summary: string }> {
   const extraction = await client.messages.create({
     model: "claude-haiku-4-5-20251001",
     max_tokens: 300,
-    system: "Extract structured data from a SeriousBot intake transcript. Respond with ONLY valid JSON, no explanation.",
+    system: "Extract structured data from a bot intake transcript. Respond with ONLY valid JSON, no explanation.",
     messages: [{
       role: "user",
-      content: `Extract the following from this transcript and return as JSON with keys "name", "contact", and "summary":
-- name: the visitor's full name (look for answers to "What's your full name?")
-- contact: their email address (look for answers to "And your email?" — must be an email, not a phone)
-- summary: 1-2 sentences covering the problem they're solving, timeline, and budget if mentioned
+      content: `Extract the following from this transcript and return as JSON with keys "name", "contact", "phone", and "summary":
+- name: the visitor's full name
+- contact: their email address (must be an email, not a phone number)
+- phone: their phone number if provided, otherwise empty string
+- summary: 1-2 sentences covering what they need, timeline, and budget if mentioned
 
 Transcript:
 ${transcript}`,
@@ -61,7 +54,7 @@ ${transcript}`,
     const text = raw.replace(/^```(?:json)?\s*/m, '').replace(/\s*```\s*$/m, '').trim();
     return JSON.parse(text);
   } catch {
-    return { name: "Unknown", contact: "Not provided", summary: "See transcript below." };
+    return { name: "Unknown", contact: "Not provided", phone: "", summary: "See transcript below." };
   }
 }
 
@@ -79,10 +72,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const body = req.body;
   const ip = getIP(req);
+  const config = (body.clientId && CLIENT_CONFIGS[body.clientId]) || defaultConfig;
+
+  console.log("[chat] incoming body keys:", Object.keys(body), "| confirm:", body.confirm, typeof body.confirm, "| clientId:", body.clientId);
 
   // Handle confirmation: user verified their name/email, now send the email
   if (body.confirm === true) {
-    const convAllowed = await checkLimit(`sb:conv:${ip}`, 3, 86400);
+    // TODO: reset to 10 and 3 before production deploy
+    const convAllowed = await checkLimit(`sb:conv:${ip}`, 20, 86400);
     if (!convAllowed) {
       res.status(200).json({ confirmed: false, message: "You've already submitted a few times today. Todd will be in touch." });
       return;
@@ -90,17 +87,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const { name, email, summary, transcript } = body;
     const conversationId = `sb-${Date.now()}`;
-    const toddEmail = process.env.TODD_EMAIL || "todd@seriousbusiness.ai";
+    const toddEmail = config.notificationEmail;
 
     try {
-      await resend.emails.send({
-        from: "SeriousBot <bot@seriousbusiness.ai>",
+      console.log("[chat] Sending confirmation email", {
+        to: config.notificationEmail,
+        from: `${config.botName} <bot@seriousbusiness.ai>`,
+        subject: `New Lead: ${name} — ${new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}`,
+      });
+      const sendResult = await resend.emails.send({
+        from: `${config.botName} <bot@seriousbusiness.ai>`,
         to: toddEmail,
         subject: `New Lead: ${name} — ${new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}`,
         html: `
           <div style="font-family: monospace; max-width: 600px; margin: 0 auto; color: #0a0a0a;">
             <div style="background: #0a0a0a; color: #fff; padding: 20px 24px; margin-bottom: 0;">
-              <div style="font-size: 11px; letter-spacing: 3px; color: #999; margin-bottom: 4px;">SERIOUSBOT INTAKE</div>
+              <div style="font-size: 11px; letter-spacing: 3px; color: #999; margin-bottom: 4px;">${config.businessName.toUpperCase()} · ${config.botName.toUpperCase()}</div>
               <div style="font-size: 20px; font-weight: 900; letter-spacing: -0.5px;">New Lead</div>
             </div>
             <div style="border: 1px solid #0a0a0a; border-top: none; padding: 24px; margin-bottom: 24px;">
@@ -125,9 +127,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           </div>
         `,
       });
-      console.log("[chat] Confirmation email sent to", toddEmail);
+      console.log("[chat] Confirmation email sent:", sendResult);
     } catch (err) {
-      console.error("[chat] Confirmation email failed:", err);
+      console.error("[chat] Confirmation email failed:", JSON.stringify(err, null, 2), err);
     }
 
     res.status(200).json({ confirmed: true });
@@ -138,15 +140,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if (isInitial) {
     res.status(200).json({
-      reply: "Hi there. I'm SeriousBot. Tell me what's not working — or what you're trying to build. Todd will follow up personally.",
-      message: "Hi there. I'm SeriousBot. Tell me what's not working — or what you're trying to build. Todd will follow up personally.",
+      reply: config.greeting,
+      message: config.greeting,
       isComplete: false,
     });
     return;
   }
 
-  // Rate limit: 10 messages per IP per hour
-  const msgAllowed = await checkLimit(`sb:msg:${ip}`, 10, 3600);
+  // TODO: reset to 10 and 3 before production deploy
+  const msgAllowed = await checkLimit(`sb:msg:${ip}`, 100, 3600);
   if (!msgAllowed) {
     res.status(429).json({ error: "Too many messages. Please try again later.", message: "You've sent too many messages. Please try again in an hour." });
     return;
@@ -194,7 +196,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const response = await client.messages.create({
       model: "claude-haiku-4-5-20251001",
       max_tokens: 150,
-      system: SYSTEM_PROMPT,
+      system: config.systemPrompt(config.operatorName, config.followUpTimeframe),
       messages,
     });
 
@@ -203,33 +205,28 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         ? response.content[0].text
         : "Sorry, I had trouble with that. Please try again.";
 
-    const isComplete =
-      assistantMessage.includes("pass this to Todd") ||
-      assistantMessage.includes("reach out within one business day") ||
-      assistantMessage.includes("pass your information to Todd") ||
-      assistantMessage.includes("pass this along to Todd") ||
-      assistantMessage.includes("get this to Todd") ||
-      assistantMessage.includes("I'll let Todd know") ||
-      assistantMessage.includes("within one business day");
+    const isComplete = config.closingPhrases.some(phrase => assistantMessage.includes(phrase));
 
     console.log("[chat] assistantMessage:", assistantMessage);
     console.log("[chat] isComplete:", isComplete);
 
     if (isComplete) {
       const transcript = [
-        ...messages.map((m: any) => `${m.role === "user" ? "Visitor" : "SeriousBot"}: ${m.content}`),
-        `SeriousBot: ${assistantMessage}`,
+        ...messages.map((m: any) => `${m.role === "user" ? "Visitor" : config.botName}: ${m.content}`),
+        `${config.botName}: ${assistantMessage}`,
       ].join("\n");
 
       let name = "";
       let contact = "";
+      let phone = "";
       let summary = "";
       try {
         const extracted = await buildEmailSummary(transcript);
         name = extracted.name;
         contact = extracted.contact;
+        phone = extracted.phone;
         summary = extracted.summary;
-        console.log("[chat] Extracted for confirmation:", { name, contact });
+        console.log("[chat] Extracted for confirmation:", { name, contact, phone });
       } catch (err) {
         console.error("[chat] buildEmailSummary failed, returning isComplete anyway:", err);
       }
@@ -240,6 +237,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         isComplete: true,
         capturedName: name,
         capturedEmail: contact,
+        capturedPhone: phone,
         transcript,
         summary,
       });

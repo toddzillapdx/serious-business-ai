@@ -1,6 +1,23 @@
 import { useState, useRef, useEffect } from 'react';
-import Link from 'next/link';
-import config from '../config';
+import { useRouter } from 'next/router';
+import Head from 'next/head';
+
+interface ClientConfig {
+  botName: string;
+  businessName: string;
+  operatorName: string;
+  notificationEmail: string;
+  followUpTimeframe: string;
+  greeting: string;
+  collectPhone: boolean;
+  closingPhrases: string[];
+  systemPrompt: (operatorName: string, followUpTimeframe: string) => string;
+}
+
+const CLIENT_LOADERS: Record<string, () => Promise<{ default: ClientConfig }>> = {
+  seriousbusiness: () => import('../config/clients/seriousbusiness'),
+  ottomanempire: () => import('../config/clients/ottomanempire'),
+};
 
 interface Message {
   id: string;
@@ -9,15 +26,11 @@ interface Message {
   timestamp: string;
 }
 
-export default function Contact() {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: '1',
-      role: 'bot',
-      content: config.greeting,
-      timestamp: '09:42'
-    }
-  ]);
+export default function Chat() {
+  const router = useRouter();
+  const [config, setConfig] = useState<ClientConfig | null>(null);
+  const [notFound, setNotFound] = useState(false);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
@@ -32,19 +45,33 @@ export default function Contact() {
   const [editEmail, setEditEmail] = useState('');
   const [capturedPhone, setCapturedPhone] = useState('');
   const [editPhone, setEditPhone] = useState('');
+  const [clientId, setClientId] = useState('');
   const [sessionTime, setSessionTime] = useState('');
   const chatBodyRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const time = new Date().toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-      timeZone: 'America/Los_Angeles',
-      hour12: true,
-    });
-    setSessionTime(time);
-    setMessages(prev => [{ ...prev[0], timestamp: time }, ...prev.slice(1)]);
-  }, []);
+    if (!router.isReady) return;
+    const client = router.query.client;
+    if (!client || typeof client !== 'string' || !CLIENT_LOADERS[client]) {
+      setNotFound(true);
+      return;
+    }
+    CLIENT_LOADERS[client]()
+      .then(mod => {
+        const cfg = mod.default;
+        const time = new Date().toLocaleTimeString('en-US', {
+          hour: '2-digit',
+          minute: '2-digit',
+          timeZone: 'America/Los_Angeles',
+          hour12: true,
+        });
+        setSessionTime(time);
+        setMessages([{ id: '1', role: 'bot', content: cfg.greeting, timestamp: time }]);
+        setClientId(client);
+        setConfig(cfg);
+      })
+      .catch(() => setNotFound(true));
+  }, [router.isReady, router.query.client]);
 
   useEffect(() => {
     if (chatBodyRef.current) {
@@ -53,13 +80,13 @@ export default function Contact() {
   }, [messages]);
 
   const handleSend = async () => {
-    if (!input.trim()) return;
+    if (!input.trim() || !config) return;
 
     const userMessage: Message = {
       id: Date.now().toString(),
       role: 'user',
       content: input,
-      timestamp: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
+      timestamp: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
     };
 
     setMessages(prev => [...prev, userMessage]);
@@ -71,8 +98,9 @@ export default function Contact() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          messages: messages.map(m => ({ role: m.role, content: m.content })).concat([{ role: 'user', content: input }])
-        })
+          clientId,
+          messages: messages.map(m => ({ role: m.role, content: m.content })).concat([{ role: 'user', content: input }]),
+        }),
       });
 
       const data = await response.json();
@@ -80,21 +108,24 @@ export default function Contact() {
         id: (Date.now() + 1).toString(),
         role: 'bot',
         content: data.message,
-        timestamp: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
+        timestamp: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
       };
 
       setMessages(prev => [...prev, botMessage]);
       if (data.isComplete) {
         const name = data.capturedName || '';
         const email = data.capturedEmail || '';
+        const phone = data.capturedPhone || '';
         const invalidName = !name || name === 'Unknown';
         const invalidEmail = !email || email === 'Not provided';
         setCapturedName(name);
         setCapturedEmail(email);
+        setCapturedPhone(phone);
         setPendingTranscript(data.transcript || '');
         setPendingSummary(data.summary || '');
         setEditName(name);
         setEditEmail(email);
+        setEditPhone(phone);
         if (invalidName || invalidEmail) setEditMode(true);
         setIsComplete(true);
       }
@@ -115,11 +146,12 @@ export default function Contact() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           confirm: true,
+          clientId,
           name: finalName,
           email: finalEmail,
           summary: pendingSummary,
           transcript: pendingTranscript,
-        })
+        }),
       });
       setCapturedName(finalName);
       setCapturedEmail(finalEmail);
@@ -131,60 +163,23 @@ export default function Contact() {
     }
   };
 
+  if (notFound) {
+    return (
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#fff', fontFamily: 'monospace', fontSize: '14px', color: '#666' }}>
+        Not found
+      </div>
+    );
+  }
+
+  if (!config) return null;
+
   return (
-    <div style={{ backgroundColor: '#fff', color: '#0a0a0a', fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: '14px', lineHeight: '1.6' }}>
-      {/* NAV */}
-      <header className="flex items-center justify-between px-4 md:px-8" style={{ height: '72px', borderBottom: '1px solid #ccc', background: '#fff' }}>
-        <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '14px', textDecoration: 'none' }}>
-          <div style={{ width: '36px', height: '36px', background: '#000', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, fontSize: '14px', letterSpacing: '-0.5px' }}>SB</div>
-          <div>
-            <div style={{ fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, fontSize: '16px', letterSpacing: '-0.5px' }}>SERIOUS BUSINESS</div>
-            <div style={{ fontSize: '9px', letterSpacing: '3px', color: '#666', marginTop: '2px' }}>EST. 2026 — PORTLAND, OR</div>
-          </div>
-        </Link>
-        <nav className="hidden md:flex" style={{ gap: '32px', alignItems: 'center', listStyle: 'none' }}>
-          <a href="/#about" style={{ fontSize: '13px', color: '#0a0a0a', textDecoration: 'none' }}>About</a>
-          <a href="/#caps" style={{ fontSize: '13px', color: '#0a0a0a', textDecoration: 'none' }}>Capabilities</a>
-          <a href="/#services" style={{ fontSize: '13px', color: '#0a0a0a', textDecoration: 'none' }}>Services</a>
-          <a href="/#manifesto" style={{ fontSize: '13px', color: '#0a0a0a', textDecoration: 'none' }}>Principles</a>
-          <a href="/contact" style={{ fontSize: '13px', color: '#0a0a0a', textDecoration: 'none', borderBottom: '2px solid #000', paddingBottom: '6px' }}>Contact</a>
-        </nav>
-        <a href="#contact" className="hidden md:inline-flex" style={{ alignItems: 'center', gap: '10px', background: '#000', color: '#fff', padding: '10px 18px', fontSize: '12px', fontWeight: 700, letterSpacing: '2px', textDecoration: 'none', textTransform: 'uppercase' }}>{"Let's Talk →"}</a>
-      </header>
-
-      {/* CONTACT SECTION */}
-      <section className="px-4 md:px-8 py-16 md:py-24" style={{ borderBottom: '1px solid #ccc', maxWidth: '1280px', margin: '0 auto' }} id="contact">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16 items-start">
-          {/* Left Column */}
-          <div>
-            <h2 className="text-[56px] sm:text-[72px] md:text-[88px]" style={{ fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, letterSpacing: '-3px', lineHeight: '0.95', marginBottom: '32px' }}>{"Let's"}<br />{"talk."}</h2>
-
-            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '20px', marginTop: '8px' }}>
-              <li style={{ display: 'flex', gap: '16px', alignItems: 'flex-start', fontSize: '16px', lineHeight: '1.4' }}>
-                <span style={{ fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, fontSize: '18px', color: '#0a0a0a', minWidth: '24px' }}>—</span>
-                <div>
-                  <strong style={{ fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, letterSpacing: '-0.3px', display: 'block', fontSize: '16px', textTransform: 'uppercase' }}>No sales pitch.</strong>
-                  <span style={{ display: 'block', fontSize: '13px', color: '#666', marginTop: '2px' }}>No funnel, no follow-up sequences.</span>
-                </div>
-              </li>
-              <li style={{ display: 'flex', gap: '16px', alignItems: 'flex-start', fontSize: '16px', lineHeight: '1.4' }}>
-                <span style={{ fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, fontSize: '18px', color: '#0a0a0a', minWidth: '24px' }}>—</span>
-                <div>
-                  <strong style={{ fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, letterSpacing: '-0.3px', display: 'block', fontSize: '16px', textTransform: 'uppercase' }}>No commitment.</strong>
-                  <span style={{ display: 'block', fontSize: '13px', color: '#666', marginTop: '2px' }}>A conversation, not a contract.</span>
-                </div>
-              </li>
-              <li style={{ display: 'flex', gap: '16px', alignItems: 'flex-start', fontSize: '16px', lineHeight: '1.4' }}>
-                <span style={{ fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, fontSize: '18px', color: '#0a0a0a', minWidth: '24px' }}>—</span>
-                <div>
-                  <strong style={{ fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, letterSpacing: '-0.3px', display: 'block', fontSize: '16px', textTransform: 'uppercase' }}>Just a real conversation.</strong>
-                  <span style={{ display: 'block', fontSize: '13px', color: '#666', marginTop: '2px' }}>{"Tell SeriousBot what you're working on. Todd follows up personally within 48 hours."}</span>
-                </div>
-              </li>
-            </ul>
-          </div>
-
-          {/* Chat Window */}
+    <>
+      <Head>
+        <title>{config.botName} — {config.businessName}</title>
+      </Head>
+      <div style={{ minHeight: '100vh', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: '14px', lineHeight: '1.6', padding: '24px' }}>
+        <div style={{ width: '100%', maxWidth: '640px' }}>
           <div style={{ border: '1px solid #0a0a0a', background: '#fff', display: 'flex', flexDirection: 'column', height: '560px' }}>
             {/* Chat Header */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 20px', borderBottom: '1px solid #0a0a0a', background: '#0a0a0a', color: '#fff' }}>
@@ -202,7 +197,9 @@ export default function Contact() {
 
             {/* Chat Body */}
             <div ref={chatBodyRef} style={{ flex: 1, padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px', background: '#f5f5f5', overflowY: 'auto' }}>
-              <div style={{ fontSize: '10px', letterSpacing: '3px', color: '#666', textAlign: 'center', padding: '4px 0' }}>{sessionTime ? `— SESSION STARTED · ${sessionTime} PT —` : '— SESSION STARTED —'}</div>
+              <div style={{ fontSize: '10px', letterSpacing: '3px', color: '#666', textAlign: 'center', padding: '4px 0' }}>
+                {sessionTime ? `— SESSION STARTED · ${sessionTime} PT —` : '— SESSION STARTED —'}
+              </div>
 
               {messages.map(msg => (
                 <div key={msg.id} style={{ display: 'flex', flexDirection: 'column' }}>
@@ -213,8 +210,8 @@ export default function Contact() {
                     lineHeight: '1.55',
                     background: msg.role === 'bot' ? '#fff' : '#0a0a0a',
                     color: msg.role === 'bot' ? '#000' : '#fff',
-                    border: `1px solid ${msg.role === 'bot' ? '#0a0a0a' : '#0a0a0a'}`,
-                    alignSelf: msg.role === 'bot' ? 'flex-start' : 'flex-end'
+                    border: '1px solid #0a0a0a',
+                    alignSelf: msg.role === 'bot' ? 'flex-start' : 'flex-end',
                   }}>
                     {msg.content}
                   </div>
@@ -236,46 +233,46 @@ export default function Contact() {
 
             {/* Chat Input / Confirmation / Done */}
             {!isComplete ? (
-            <div style={{ display: 'flex', gap: '0', borderTop: '1px solid #0a0a0a', background: '#fff' }}>
-              <input
-                type="text"
-                placeholder="Type your reply…"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-                style={{
-                  flex: 1,
-                  border: 'none',
-                  padding: '18px 20px',
-                  fontFamily: "var(--font-ibm-plex-mono), monospace",
-                  fontSize: '14px',
-                  outline: 'none',
-                  background: 'transparent'
-                }}
-              />
-              <button
-                onClick={handleSend}
-                disabled={loading}
-                style={{
-                  background: '#0a0a0a',
-                  color: '#fff',
-                  border: 'none',
-                  padding: '0 28px',
-                  fontFamily: "var(--font-ibm-plex-mono), monospace",
-                  fontWeight: 700,
-                  fontSize: '11px',
-                  letterSpacing: '3px',
-                  textTransform: 'uppercase',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '10px',
-                  cursor: loading ? 'not-allowed' : 'pointer',
-                  opacity: loading ? 0.6 : 1
-                }}
-              >
-                Send →
-              </button>
-            </div>
+              <div style={{ display: 'flex', borderTop: '1px solid #0a0a0a', background: '#fff' }}>
+                <input
+                  type="text"
+                  placeholder="Type your reply…"
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && handleSend()}
+                  style={{
+                    flex: 1,
+                    border: 'none',
+                    padding: '18px 20px',
+                    fontFamily: "var(--font-ibm-plex-mono), monospace",
+                    fontSize: '14px',
+                    outline: 'none',
+                    background: 'transparent',
+                  }}
+                />
+                <button
+                  onClick={handleSend}
+                  disabled={loading}
+                  style={{
+                    background: '#0a0a0a',
+                    color: '#fff',
+                    border: 'none',
+                    padding: '0 28px',
+                    fontFamily: "var(--font-ibm-plex-mono), monospace",
+                    fontWeight: 700,
+                    fontSize: '11px',
+                    letterSpacing: '3px',
+                    textTransform: 'uppercase',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px',
+                    cursor: loading ? 'not-allowed' : 'pointer',
+                    opacity: loading ? 0.6 : 1,
+                  }}
+                >
+                  Send →
+                </button>
+              </div>
             ) : isConfirmed ? (
               <div style={{ borderTop: '1px solid #0a0a0a', padding: '16px 20px', background: '#fff', fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: '11px', letterSpacing: '2px', color: '#666', textAlign: 'center' }}>
                 SENT — {config.operatorName.toUpperCase()} WILL REACH OUT TO {capturedEmail.toUpperCase()}
@@ -349,32 +346,7 @@ export default function Contact() {
             )}
           </div>
         </div>
-      </section>
-
-      {/* FOOTER */}
-      <footer className="px-4 md:px-8" style={{ background: '#0a0a0a', color: '#fff', paddingTop: '48px', paddingBottom: '24px', maxWidth: '1280px', margin: '0 auto' }}>
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-8" style={{ paddingBottom: '32px', borderBottom: '1px solid #3a3a3a' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-            <div style={{ width: '36px', height: '36px', background: '#fff', color: '#0a0a0a', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, fontSize: '14px', letterSpacing: '-0.5px' }}>SB</div>
-            <div>
-              <div style={{ fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, fontSize: '16px', letterSpacing: '-0.5px' }}>SERIOUS BUSINESS</div>
-              <div style={{ fontSize: '10px', letterSpacing: '4px', color: '#999', marginTop: '2px' }}>SERIOUSBUSINESS.AI</div>
-            </div>
-          </div>
-          <nav className="flex flex-wrap gap-4 md:gap-8">
-            <a href="/" style={{ fontSize: '12px', letterSpacing: '2px', textTransform: 'uppercase', color: '#ccc', textDecoration: 'none' }}>Home</a>
-            <a href="/#about" style={{ fontSize: '12px', letterSpacing: '2px', textTransform: 'uppercase', color: '#ccc', textDecoration: 'none' }}>About</a>
-            <a href="/#caps" style={{ fontSize: '12px', letterSpacing: '2px', textTransform: 'uppercase', color: '#ccc', textDecoration: 'none' }}>Capabilities</a>
-            <a href="/#services" style={{ fontSize: '12px', letterSpacing: '2px', textTransform: 'uppercase', color: '#ccc', textDecoration: 'none' }}>Services</a>
-            <a href="/#manifesto" style={{ fontSize: '12px', letterSpacing: '2px', textTransform: 'uppercase', color: '#ccc', textDecoration: 'none' }}>Principles</a>
-            <a href="/contact" style={{ fontSize: '12px', letterSpacing: '2px', textTransform: 'uppercase', color: '#ccc', textDecoration: 'none' }}>Contact</a>
-          </nav>
-        </div>
-        <div className="flex flex-col sm:flex-row justify-between gap-2" style={{ paddingTop: '20px', fontSize: '11px', letterSpacing: '2px', color: '#888', textTransform: 'uppercase' }}>
-          <span>© 2026 Serious Business · Portland, OR</span>
-          <span>Ship with Confidence.</span>
-        </div>
-      </footer>
-    </div>
+      </div>
+    </>
   );
 }
