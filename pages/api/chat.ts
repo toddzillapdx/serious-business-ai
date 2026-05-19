@@ -5,10 +5,12 @@ import { Redis } from '@upstash/redis';
 import defaultConfig from '../../config';
 import seriousbusiness from '../../config/clients/seriousbusiness';
 import ottomanempire from '../../config/clients/ottomanempire';
+import offthehook from '../../config/clients/offthehook';
 
 const CLIENT_CONFIGS: Record<string, any> = {
   seriousbusiness,
   ottomanempire,
+  offthehook,
 };
 
 const client = new Anthropic();

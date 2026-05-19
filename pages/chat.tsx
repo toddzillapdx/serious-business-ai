@@ -17,6 +17,7 @@ interface ClientConfig {
 const CLIENT_LOADERS: Record<string, () => Promise<{ default: ClientConfig }>> = {
   seriousbusiness: () => import('../config/clients/seriousbusiness'),
   ottomanempire: () => import('../config/clients/ottomanempire'),
+  offthehook: () => import('../config/clients/offthehook'),
 };
 
 interface Message {
