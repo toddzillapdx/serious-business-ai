@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
+import Head from 'next/head';
 import config from '../config';
 
 interface Message {
@@ -132,6 +133,11 @@ export default function Contact() {
   };
 
   return (
+    <>
+      <Head>
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32" />
+      </Head>
     <div style={{ backgroundColor: '#fff', color: '#0a0a0a', fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: '14px', lineHeight: '1.6' }}>
       {/* NAV */}
       <header className="flex items-center justify-between px-4 md:px-8" style={{ height: '72px', borderBottom: '1px solid #ccc', background: '#fff' }}>
@@ -376,5 +382,6 @@ export default function Contact() {
         </div>
       </footer>
     </div>
+    </>
   );
 }

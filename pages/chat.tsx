@@ -17,6 +17,7 @@ interface ClientConfig {
     accentColor: string;
     backgroundColor: string;
     logoUrl: string;
+    faviconUrl?: string;
     headerStyle: string;
   };
 }
@@ -193,6 +194,7 @@ export default function Chat() {
     <>
       <Head>
         <title>{config.botName} — {config.businessName}</title>
+        <link rel="icon" href={branding.faviconUrl || '/favicon.ico'} />
       </Head>
       <div style={{ minHeight: '100vh', background: branding.backgroundColor, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: '14px', lineHeight: '1.6', padding: '24px' }}>
         <div style={{ width: '100%', maxWidth: '640px' }}>
