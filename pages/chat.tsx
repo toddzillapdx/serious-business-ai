@@ -6,7 +6,7 @@ interface ClientConfig {
   botName: string;
   businessName: string;
   operatorName: string;
-  notificationEmail: string;
+  notificationEmail: string | string[];
   followUpTimeframe: string;
   greeting: string;
   collectPhone: boolean;

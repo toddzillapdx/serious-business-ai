@@ -89,7 +89,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const { name, email, summary, transcript } = body;
     const conversationId = `sb-${Date.now()}`;
-    const toddEmail = config.notificationEmail;
 
     try {
       console.log("[chat] Sending confirmation email", {
@@ -99,7 +98,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       });
       const sendResult = await resend.emails.send({
         from: `${config.botName} <bot@seriousbusiness.ai>`,
-        to: toddEmail,
+        to: Array.isArray(config.notificationEmail)
+          ? config.notificationEmail
+          : [config.notificationEmail],
         subject: `New Lead: ${name} — ${new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}`,
         html: `
           <div style="font-family: monospace; max-width: 600px; margin: 0 auto; color: #0a0a0a;">
