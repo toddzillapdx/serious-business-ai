@@ -12,6 +12,13 @@ interface ClientConfig {
   collectPhone: boolean;
   closingPhrases: string[];
   systemPrompt: (operatorName: string, followUpTimeframe: string) => string;
+  branding?: {
+    primaryColor: string;
+    accentColor: string;
+    backgroundColor: string;
+    logoUrl: string;
+    headerStyle: string;
+  };
 }
 
 const CLIENT_LOADERS: Record<string, () => Promise<{ default: ClientConfig }>> = {
@@ -174,22 +181,30 @@ export default function Chat() {
 
   if (!config) return null;
 
+  const branding = config?.branding ?? {
+    primaryColor: "#111111",
+    accentColor: "#444444",
+    backgroundColor: "#ffffff",
+    logoUrl: "",
+    headerStyle: "dark",
+  };
+
   return (
     <>
       <Head>
         <title>{config.botName} — {config.businessName}</title>
       </Head>
-      <div style={{ minHeight: '100vh', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: '14px', lineHeight: '1.6', padding: '24px' }}>
+      <div style={{ minHeight: '100vh', background: branding.backgroundColor, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: '14px', lineHeight: '1.6', padding: '24px' }}>
         <div style={{ width: '100%', maxWidth: '640px' }}>
           <div style={{ border: '1px solid #0a0a0a', background: '#fff', display: 'flex', flexDirection: 'column', height: '560px' }}>
             {/* Chat Header */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 20px', borderBottom: '1px solid #0a0a0a', background: '#0a0a0a', color: '#fff' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 20px', borderBottom: '1px solid #0a0a0a', background: branding.primaryColor, color: '#fff' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <div style={{ width: '36px', height: '36px', background: '#fff', color: '#0a0a0a', fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, fontSize: '13px', display: 'flex', alignItems: 'center', justifyContent: 'center', letterSpacing: '-0.5px' }}>SB</div>
-                <div>
-                  <div style={{ fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, fontSize: '14px', letterSpacing: '1px', textTransform: 'uppercase' }}>{config.botName}</div>
-                  <div style={{ fontSize: '10px', letterSpacing: '3px', color: '#999', marginTop: '2px' }}>CONTACT INTAKE · V1.0</div>
-                </div>
+                {branding.logoUrl ? (
+                  <img src={branding.logoUrl} alt={config.businessName} style={{ maxHeight: '36px', objectFit: 'contain' }} />
+                ) : (
+                  <span>{config.botName}</span>
+                )}
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '10px', letterSpacing: '3px', textTransform: 'uppercase', color: '#fff' }}>
                 <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#00C853', boxShadow: '0 0 0 3px rgba(0,200,83,0.2)', display: 'inline-block' }}></span>Online
@@ -255,7 +270,7 @@ export default function Chat() {
                   onClick={handleSend}
                   disabled={loading}
                   style={{
-                    background: '#0a0a0a',
+                    background: branding.primaryColor,
                     color: '#fff',
                     border: 'none',
                     padding: '0 28px',
@@ -306,7 +321,7 @@ export default function Chat() {
                     <div style={{ display: 'flex', gap: '8px', marginTop: '2px' }}>
                       <button
                         onClick={() => { setCapturedName(editName); setCapturedEmail(editEmail); if (config.collectPhone) setCapturedPhone(editPhone); setEditMode(false); }}
-                        style={{ background: '#0a0a0a', color: '#fff', border: 'none', padding: '8px 16px', fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: '10px', letterSpacing: '2px', textTransform: 'uppercase', cursor: 'pointer' }}
+                        style={{ background: branding.primaryColor, color: '#fff', border: 'none', padding: '8px 16px', fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: '10px', letterSpacing: '2px', textTransform: 'uppercase', cursor: 'pointer' }}
                       >Save</button>
                       <button
                         onClick={() => setEditMode(false)}
@@ -334,7 +349,7 @@ export default function Chat() {
                       <button
                         onClick={handleConfirm}
                         disabled={confirmLoading || editMode}
-                        style={{ background: '#0a0a0a', color: '#fff', border: 'none', padding: '10px 20px', fontFamily: "var(--font-ibm-plex-mono), monospace", fontWeight: 700, fontSize: '10px', letterSpacing: '2px', textTransform: 'uppercase', cursor: confirmLoading ? 'not-allowed' : 'pointer', opacity: confirmLoading ? 0.6 : 1 }}
+                        style={{ background: branding.primaryColor, color: '#fff', border: 'none', padding: '10px 20px', fontFamily: "var(--font-ibm-plex-mono), monospace", fontWeight: 700, fontSize: '10px', letterSpacing: '2px', textTransform: 'uppercase', cursor: confirmLoading ? 'not-allowed' : 'pointer', opacity: confirmLoading ? 0.6 : 1 }}
                       >{confirmLoading ? 'Sending…' : 'Looks good →'}</button>
                       <button
                         onClick={() => { setEditName(capturedName); setEditEmail(capturedEmail); setEditPhone(capturedPhone); setEditMode(true); }}

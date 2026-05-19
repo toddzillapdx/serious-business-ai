@@ -5,6 +5,13 @@ const config = {
   notificationEmail: "tames914@gmail.com",
   followUpTimeframe: "one business day",
   collectPhone: true,
+  branding: {
+    primaryColor: "#073364",
+    accentColor: "#6aafe4",
+    backgroundColor: "#ffffff",
+    logoUrl: "https://othseafood.com/wp-content/uploads/2016/05/logo-1.png",
+    headerStyle: "dark",
+  },
   greeting: "Hey! I'm the Catch Of The Day Bot for Off The Hook Seafood. We're 4th generation fishmongers specializing in the freshest seasonal shellfish and wholesale seafood. What can I help you with today?",
   closingPhrases: [
     "pass this to John",
