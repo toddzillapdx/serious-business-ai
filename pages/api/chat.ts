@@ -103,12 +103,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         subject: `New Lead: ${name} — ${new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}`,
         html: `
           <div style="font-family: monospace; max-width: 600px; margin: 0 auto; color: #0a0a0a;">
-            <div style="background: #0a0a0a; color: #fff; padding: 20px 24px; margin-bottom: 0;">
-              <div style="font-size: 11px; letter-spacing: 3px; color: #999; margin-bottom: 4px;">${config.businessName.toUpperCase()} · ${config.botName.toUpperCase()}</div>
-              <div style="font-size: 20px; font-weight: 900; letter-spacing: -0.5px;">New Lead</div>
+            <div style="background: ${config.branding?.primaryColor || '#111111'}; padding: 24px 32px;">
+              <div>
+                <div style="color: #ffffff; font-family: monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.7;">${config.businessName}</div>
+                <div style="color: #ffffff; font-family: monospace; font-size: 16px; font-weight: 700; letter-spacing: 0.05em;">NEW LEAD</div>
+              </div>
             </div>
             <div style="border: 1px solid #0a0a0a; border-top: none; padding: 24px; margin-bottom: 24px;">
               <table style="width: 100%; border-collapse: collapse;">
+                <tr>
+                  <td colspan="2" style="padding: 8px 10px; background: ${config.branding?.accentColor || '#333333'}; font-size: 10px; letter-spacing: 2px; color: #fff; text-transform: uppercase; font-family: monospace;">Lead Details</td>
+                </tr>
                 <tr>
                   <td style="padding: 10px 0; border-bottom: 1px solid #eee; font-size: 11px; letter-spacing: 2px; color: #666; width: 120px;">NAME</td>
                   <td style="padding: 10px 0; border-bottom: 1px solid #eee; font-size: 14px; font-weight: 700;">${name}</td>

@@ -35,6 +35,9 @@ interface Message {
   timestamp: string;
 }
 
+const stripMarkdown = (text: string) =>
+  text.replace(/\*\*(.*?)\*\*/g, '$1').replace(/\*(.*?)\*/g, '$1');
+
 export default function Chat() {
   const router = useRouter();
   const [config, setConfig] = useState<ClientConfig | null>(null);
@@ -231,7 +234,7 @@ export default function Chat() {
                     border: '1px solid #0a0a0a',
                     alignSelf: msg.role === 'bot' ? 'flex-start' : 'flex-end',
                   }}>
-                    {msg.content}
+                    {msg.role === 'bot' ? stripMarkdown(msg.content) : msg.content}
                   </div>
                   <div style={{ fontSize: '10px', letterSpacing: '2px', color: '#666', marginTop: '6px', textTransform: 'uppercase', alignSelf: msg.role === 'bot' ? 'flex-start' : 'flex-end' }}>
                     {msg.role === 'bot' ? config.botName.toUpperCase() : 'YOU'} · {msg.timestamp}
