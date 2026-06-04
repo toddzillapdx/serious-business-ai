@@ -3,11 +3,22 @@ import { useEffect, useRef, useState } from 'react';
 interface Message {
   role: 'user' | 'bot';
   content: string;
+  timestamp: string;
 }
 
 interface ChatWindowProps {
   onComplete?: (transcript: string) => void;
 }
+
+function nowTime() {
+  return new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+}
+
+const SBAvatar = () => (
+  <div style={{ width: '28px', height: '28px', background: '#0a0a0a', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, fontSize: '10px', letterSpacing: '-0.3px', flexShrink: 0 }}>
+    SB
+  </div>
+);
 
 export default function ChatWindow({ onComplete }: ChatWindowProps) {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -16,12 +27,8 @@ export default function ChatWindow({ onComplete }: ChatWindowProps) {
   const [isComplete, setIsComplete] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
   useEffect(() => {
-    scrollToBottom();
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
   useEffect(() => {
@@ -34,7 +41,7 @@ export default function ChatWindow({ onComplete }: ChatWindowProps) {
           body: JSON.stringify({ isInitial: true }),
         });
         const data = await response.json();
-        setMessages([{ role: 'bot', content: data.reply }]);
+        setMessages([{ role: 'bot', content: data.reply, timestamp: nowTime() }]);
       } catch (error) {
         console.error('Chat init failed:', error);
       } finally {
@@ -49,21 +56,15 @@ export default function ChatWindow({ onComplete }: ChatWindowProps) {
 
     const userMessage = input.trim();
     setInput('');
-    const updatedMessages = [...messages, { role: 'user' as const, content: userMessage }];
+    const updatedMessages: Message[] = [...messages, { role: 'user', content: userMessage, timestamp: nowTime() }];
     setMessages(updatedMessages);
     setLoading(true);
 
     try {
-      // Build history from all messages EXCEPT the current user message being sent
       const history = updatedMessages
         .slice(0, -1)
-        .filter((m) => m.content && m.content.trim() !== '')
-        .map((m) => ({
-          role: m.role === 'bot' ? 'assistant' : 'user',
-          content: m.content,
-        }));
-
-      console.log('Sending message:', { message: userMessage, historyLength: history.length });
+        .filter((m) => m.content.trim())
+        .map((m) => ({ role: m.role === 'bot' ? 'assistant' : 'user', content: m.content }));
 
       const response = await fetch('/api/chat', {
         method: 'POST',
@@ -71,35 +72,23 @@ export default function ChatWindow({ onComplete }: ChatWindowProps) {
         body: JSON.stringify({ message: userMessage, history }),
       });
 
-      if (!response.ok) {
-        throw new Error(`API returned ${response.status}`);
-      }
+      if (!response.ok) throw new Error(`API returned ${response.status}`);
 
       const data = await response.json();
-      
-      // Handle both 'reply' and 'message' field names for robustness
       const botReply = data.reply || data.message;
-      
-      if (!botReply) {
-        throw new Error('API response missing reply/message field');
-      }
+      if (!botReply) throw new Error('API response missing reply/message field');
 
-      setMessages((prev) => [...prev, { role: 'bot', content: botReply }]);
+      setMessages((prev) => [...prev, { role: 'bot', content: botReply, timestamp: nowTime() }]);
 
       if (data.isComplete) {
         setIsComplete(true);
-        if (onComplete) {
-          const transcript = updatedMessages
-            .map((m) => `${m.role}: ${m.content}`)
-            .join('\n');
-          onComplete(transcript);
-        }
+        onComplete?.(updatedMessages.map((m) => `${m.role}: ${m.content}`).join('\n'));
       }
     } catch (error) {
       console.error('Message send failed:', error);
       setMessages((prev) => [
         ...prev,
-        { role: 'bot', content: 'Sorry, I had trouble processing that. Please try again.' },
+        { role: 'bot', content: 'Sorry, I had trouble processing that. Please try again.', timestamp: nowTime() },
       ]);
     } finally {
       setLoading(false);
@@ -107,77 +96,110 @@ export default function ChatWindow({ onComplete }: ChatWindowProps) {
   };
 
   return (
-    <div className="border border-black flex flex-col h-full">
-      <div className="bg-black text-white px-6 py-4 flex items-center justify-between border-b border-black">
-        <div className="font-exo font-black text-sm">[SB]</div>
-        <div className="font-mono text-xs tracking-widest">SERIOUSBOT</div>
-        <div className="flex items-center gap-2">
-          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-          <span className="font-mono text-xs">ONLINE</span>
+    <div style={{ border: '1px solid #0a0a0a', display: 'flex', flexDirection: 'column', height: '100%', background: '#fff' }}>
+      <style>{`
+        @keyframes sbBounce { 0%, 60%, 100% { transform: translateY(0); opacity: 0.3; } 30% { transform: translateY(-4px); opacity: 1; } }
+        @keyframes sbMsgAppear { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+      `}</style>
+
+      {/* Header */}
+      <div style={{ background: '#0a0a0a', color: '#fff', padding: '16px 20px', borderBottom: '1px solid #0a0a0a', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div style={{ width: '36px', height: '36px', background: '#fff', color: '#0a0a0a', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, fontSize: '13px', letterSpacing: '-0.5px' }}>SB</div>
+          <div>
+            <div style={{ fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, fontSize: '14px', letterSpacing: '1px', textTransform: 'uppercase' }}>SeriousBot</div>
+            <div style={{ fontSize: '10px', letterSpacing: '3px', color: '#999', marginTop: '2px' }}>CONTACT INTAKE · V1.0</div>
+          </div>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '10px', letterSpacing: '3px', textTransform: 'uppercase' }}>
+          <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#00C853', boxShadow: '0 0 0 3px rgba(0,200,83,0.2)', display: 'inline-block' }} />
+          Online
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-white">
-        {messages.map((message, idx) => (
-          <div
-            key={idx}
-            className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
-          >
-            {message.role === 'bot' ? (
-              <div className="bg-black text-white px-4 py-3 max-w-xs font-mono text-sm leading-relaxed">
-                {message.content}
+      {/* Messages */}
+      <div style={{ flex: 1, overflowY: 'auto', padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px', background: '#f5f5f5' }}>
+        {messages.map((msg, idx) => (
+          <div key={idx} style={{ display: 'flex', flexDirection: 'column', animation: 'sbMsgAppear 200ms ease forwards' }}>
+            {msg.role === 'bot' ? (
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+                <SBAvatar />
+                <div style={{ maxWidth: '80%', padding: '14px 16px', fontSize: '14px', lineHeight: '1.55', background: '#fff', color: '#000', border: '1px solid #0a0a0a' }}>
+                  {msg.content}
+                </div>
               </div>
             ) : (
-              <div className="bg-white text-black border border-black px-4 py-3 max-w-xs font-mono text-sm leading-relaxed">
-                {message.content}
+              <div style={{ maxWidth: '80%', padding: '14px 16px', fontSize: '14px', lineHeight: '1.55', background: '#0D6EFD', color: '#fff', alignSelf: 'flex-end' }}>
+                {msg.content}
               </div>
             )}
+            <div style={{ fontSize: '10px', letterSpacing: '2px', color: '#999', marginTop: '4px', textTransform: 'uppercase', alignSelf: msg.role === 'bot' ? 'flex-start' : 'flex-end', marginLeft: msg.role === 'bot' ? '38px' : 0 }}>
+              {msg.role === 'bot' ? 'SERIOUSBOT' : 'YOU'} · {msg.timestamp}
+            </div>
           </div>
         ))}
 
         {loading && (
-          <div className="flex gap-1 text-black font-mono text-sm">
-            <span className="animate-pulse">.</span>
-            <span className="animate-pulse" style={{ animationDelay: '0.1s' }}>.</span>
-            <span className="animate-pulse" style={{ animationDelay: '0.2s' }}>.</span>
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+            <SBAvatar />
+            <div style={{ display: 'flex', gap: '5px', alignItems: 'center', padding: '14px 16px', background: '#fff', border: '1px solid #0a0a0a' }}>
+              <span style={{ width: '6px', height: '6px', background: '#999', borderRadius: '50%', display: 'inline-block', animation: 'sbBounce 1.2s infinite' }} />
+              <span style={{ width: '6px', height: '6px', background: '#999', borderRadius: '50%', display: 'inline-block', animation: 'sbBounce 1.2s infinite 0.2s' }} />
+              <span style={{ width: '6px', height: '6px', background: '#999', borderRadius: '50%', display: 'inline-block', animation: 'sbBounce 1.2s infinite 0.4s' }} />
+            </div>
           </div>
         )}
 
         {isComplete && (
-          <div className="space-y-4 text-center font-mono text-sm py-8">
-            <p className="text-sb-gray">Todd will be in touch within one business day.</p>
-            <div className="space-y-2">
-              <p className="text-black">————————————————</p>
-              <p className="font-exo font-black text-lg tracking-widest">SERIOUS BUSINESS</p>
-              <p className="text-black">————————————————</p>
-              <p className="text-xs tracking-widest">SERIOUSBUSINESS.AI</p>
-            </div>
+          <div style={{ textAlign: 'center', padding: '32px 0', fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: '12px', color: '#666', letterSpacing: '2px' }}>
+            <div style={{ marginBottom: '12px' }}>— SESSION COMPLETE —</div>
+            <div style={{ fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, fontSize: '16px', letterSpacing: '3px', color: '#0a0a0a' }}>SERIOUS BUSINESS</div>
+            <div style={{ marginTop: '8px', fontSize: '10px' }}>SERIOUSBUSINESS.AI</div>
           </div>
         )}
 
         <div ref={messagesEndRef} />
       </div>
 
+      {/* Input */}
       {!isComplete && (
-        <div className="bg-white border-t border-black p-4 flex gap-2">
-          <input
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-            id="chat-input"
-            name="chat-input"
-            placeholder="Type your reply..."
-            disabled={loading}
-            className="flex-1 border border-black px-4 py-3 font-mono text-sm focus:outline-none"
-          />
-          <button
-            onClick={handleSendMessage}
-            disabled={loading || !input.trim()}
-            className="bg-black text-white px-6 py-3 font-exo font-black hover:opacity-80 disabled:opacity-50 transition"
-          >
-            SEND →
-          </button>
+        <div style={{ borderTop: '1px solid #0a0a0a', background: '#fff' }}>
+          <div style={{ display: 'flex' }}>
+            <input
+              type="text"
+              id="chat-input"
+              name="chat-input"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+              placeholder="Type your reply…"
+              disabled={loading}
+              style={{ flex: 1, border: 'none', padding: '18px 20px', fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: '14px', outline: 'none', background: 'transparent' }}
+            />
+            <button
+              onClick={handleSendMessage}
+              disabled={loading || !input.trim()}
+              style={{
+                background: loading ? '#555' : '#0D6EFD',
+                color: '#fff',
+                border: 'none',
+                padding: '0 28px',
+                fontFamily: "var(--font-ibm-plex-mono), monospace",
+                fontWeight: 700,
+                fontSize: '11px',
+                letterSpacing: '3px',
+                textTransform: 'uppercase',
+                cursor: loading ? 'not-allowed' : 'pointer',
+                transition: 'background 150ms ease, opacity 150ms ease',
+                opacity: loading || !input.trim() ? 0.5 : 1,
+              }}
+            >
+              {loading ? '···' : 'Send →'}
+            </button>
+          </div>
+          <div style={{ padding: '4px 20px 10px', fontSize: '10px', color: '#999', fontFamily: "var(--font-ibm-plex-mono), monospace" }}>
+            Your conversation is confidential. Used only to understand your needs.
+          </div>
         </div>
       )}
     </div>

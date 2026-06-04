@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import Head from 'next/head';
 import config from '../config';
+import Nav from '../components/Nav';
 
 interface Message {
   id: string;
@@ -140,27 +141,11 @@ export default function Contact() {
       </Head>
     <div style={{ backgroundColor: '#fff', color: '#0a0a0a', fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: '14px', lineHeight: '1.6' }}>
       {/* NAV */}
-      <header className="flex items-center justify-between px-4 md:px-8" style={{ height: '72px', borderBottom: '1px solid #ccc', background: '#fff' }}>
-        <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '14px', textDecoration: 'none' }}>
-          <div style={{ width: '36px', height: '36px', background: '#000', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, fontSize: '14px', letterSpacing: '-0.5px' }}>SB</div>
-          <div>
-            <div style={{ fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, fontSize: '16px', letterSpacing: '-0.5px' }}>SERIOUS BUSINESS</div>
-            <div style={{ fontSize: '9px', letterSpacing: '3px', color: '#666', marginTop: '2px' }}>EST. 2026 — PORTLAND, OR</div>
-          </div>
-        </Link>
-        <nav className="hidden md:flex" style={{ gap: '32px', alignItems: 'center', listStyle: 'none' }}>
-          <a href="/#about" style={{ fontSize: '13px', color: '#0a0a0a', textDecoration: 'none' }}>About</a>
-          <a href="/#caps" style={{ fontSize: '13px', color: '#0a0a0a', textDecoration: 'none' }}>Capabilities</a>
-          <a href="/#services" style={{ fontSize: '13px', color: '#0a0a0a', textDecoration: 'none' }}>Services</a>
-          <a href="/#manifesto" style={{ fontSize: '13px', color: '#0a0a0a', textDecoration: 'none' }}>Principles</a>
-          <a href="/contact" style={{ fontSize: '13px', color: '#0a0a0a', textDecoration: 'none', borderBottom: '2px solid #000', paddingBottom: '6px' }}>Contact</a>
-        </nav>
-        <a href="#contact" className="hidden md:inline-flex" style={{ alignItems: 'center', gap: '10px', background: '#000', color: '#fff', padding: '10px 18px', fontSize: '12px', fontWeight: 700, letterSpacing: '2px', textDecoration: 'none', textTransform: 'uppercase' }}>{"Let's Talk →"}</a>
-      </header>
+      <Nav />
 
       {/* CONTACT SECTION */}
       <section className="px-4 md:px-8 py-16 md:py-24" style={{ borderBottom: '1px solid #ccc', maxWidth: '1280px', margin: '0 auto' }} id="contact">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16 items-start">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16 md:items-center">
           {/* Left Column */}
           <div>
             <h2 className="text-[56px] sm:text-[72px] md:text-[88px]" style={{ fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, letterSpacing: '-3px', lineHeight: '0.95', marginBottom: '32px' }}>{"Let's"}<br />{"talk."}</h2>
@@ -190,6 +175,17 @@ export default function Contact() {
             </ul>
           </div>
 
+          {/* Right Column — How This Works + Chat Window */}
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            {/* How This Works */}
+            <div style={{ marginBottom: '10px', fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: '11px', letterSpacing: '2px', color: '#999', display: 'flex', flexWrap: 'wrap', gap: '4px', alignItems: 'center' }}>
+              <span>01 Chat with SeriousBot</span>
+              <span style={{ color: '#bbb', margin: '0 4px' }}>→</span>
+              <span>02 Todd reviews</span>
+              <span style={{ color: '#bbb', margin: '0 4px' }}>→</span>
+              <span>03 Personal follow-up within 48 hours</span>
+            </div>
+
           {/* Chat Window */}
           <div style={{ border: '1px solid #0a0a0a', background: '#fff', display: 'flex', flexDirection: 'column', height: '560px' }}>
             {/* Chat Header */}
@@ -210,77 +206,90 @@ export default function Contact() {
             <div ref={chatBodyRef} style={{ flex: 1, padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px', background: '#f5f5f5', overflowY: 'auto' }}>
               <div style={{ fontSize: '10px', letterSpacing: '3px', color: '#666', textAlign: 'center', padding: '4px 0' }}>{sessionTime ? `— SESSION STARTED · ${sessionTime} PT —` : '— SESSION STARTED —'}</div>
 
+              <style>{`
+                @keyframes bounce { 0%, 60%, 100% { transform: translateY(0); opacity: 0.3; } 30% { transform: translateY(-4px); opacity: 1; } }
+                @keyframes msgAppear { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+              `}</style>
+
               {messages.map(msg => (
-                <div key={msg.id} style={{ display: 'flex', flexDirection: 'column' }}>
-                  <div style={{
-                    maxWidth: '80%',
-                    padding: '14px 16px',
-                    fontSize: '14px',
-                    lineHeight: '1.55',
-                    background: msg.role === 'bot' ? '#fff' : '#0a0a0a',
-                    color: msg.role === 'bot' ? '#000' : '#fff',
-                    border: `1px solid ${msg.role === 'bot' ? '#0a0a0a' : '#0a0a0a'}`,
-                    alignSelf: msg.role === 'bot' ? 'flex-start' : 'flex-end'
-                  }}>
-                    {msg.content}
-                  </div>
-                  <div style={{ fontSize: '10px', letterSpacing: '2px', color: '#666', marginTop: '6px', textTransform: 'uppercase', alignSelf: msg.role === 'bot' ? 'flex-start' : 'flex-end' }}>
+                <div key={msg.id} style={{ display: 'flex', flexDirection: 'column', animation: 'msgAppear 200ms ease forwards' }}>
+                  {msg.role === 'bot' ? (
+                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+                      <div style={{ width: '28px', height: '28px', background: '#0a0a0a', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, fontSize: '10px', letterSpacing: '-0.3px', flexShrink: 0 }}>SB</div>
+                      <div style={{ maxWidth: '80%', padding: '14px 16px', fontSize: '14px', lineHeight: '1.55', background: '#fff', color: '#000', border: '1px solid #0a0a0a' }}>
+                        {msg.content}
+                      </div>
+                    </div>
+                  ) : (
+                    <div style={{ maxWidth: '80%', padding: '14px 16px', fontSize: '14px', lineHeight: '1.55', background: '#0D6EFD', color: '#fff', alignSelf: 'flex-end' }}>
+                      {msg.content}
+                    </div>
+                  )}
+                  <div style={{ fontSize: '10px', letterSpacing: '2px', color: '#999', marginTop: '4px', textTransform: 'uppercase', alignSelf: msg.role === 'bot' ? 'flex-start' : 'flex-end', marginLeft: msg.role === 'bot' ? '38px' : 0 }}>
                     {msg.role === 'bot' ? config.botName.toUpperCase() : 'YOU'} · {msg.timestamp}
                   </div>
                 </div>
               ))}
 
               {loading && (
-                <div style={{ display: 'flex', gap: '4px', alignItems: 'center', padding: '4px 0' }}>
-                  <span style={{ width: '6px', height: '6px', background: '#666', borderRadius: '50%', animation: 'bounce 1.4s infinite' }}></span>
-                  <span style={{ width: '6px', height: '6px', background: '#666', borderRadius: '50%', animation: 'bounce 1.4s infinite 0.2s' }}></span>
-                  <span style={{ width: '6px', height: '6px', background: '#666', borderRadius: '50%', animation: 'bounce 1.4s infinite 0.4s' }}></span>
-                  <style>{`@keyframes bounce { 0%, 80%, 100% { opacity: 0.3; } 40% { opacity: 1; } }`}</style>
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', padding: '4px 0' }}>
+                  <div style={{ width: '28px', height: '28px', background: '#0a0a0a', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, fontSize: '10px', flexShrink: 0 }}>SB</div>
+                  <div style={{ display: 'flex', gap: '5px', alignItems: 'center', padding: '14px 16px', background: '#fff', border: '1px solid #0a0a0a' }}>
+                    <span style={{ width: '6px', height: '6px', background: '#999', borderRadius: '50%', display: 'inline-block', animation: 'bounce 1.2s infinite' }}></span>
+                    <span style={{ width: '6px', height: '6px', background: '#999', borderRadius: '50%', display: 'inline-block', animation: 'bounce 1.2s infinite 0.2s' }}></span>
+                    <span style={{ width: '6px', height: '6px', background: '#999', borderRadius: '50%', display: 'inline-block', animation: 'bounce 1.2s infinite 0.4s' }}></span>
+                  </div>
                 </div>
               )}
             </div>
 
             {/* Chat Input / Confirmation / Done */}
             {!isComplete ? (
-            <div style={{ display: 'flex', gap: '0', borderTop: '1px solid #0a0a0a', background: '#fff' }}>
-              <input
-                type="text"
-                placeholder="Type your reply…"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-                style={{
-                  flex: 1,
-                  border: 'none',
-                  padding: '18px 20px',
-                  fontFamily: "var(--font-ibm-plex-mono), monospace",
-                  fontSize: '14px',
-                  outline: 'none',
-                  background: 'transparent'
-                }}
-              />
-              <button
-                onClick={handleSend}
-                disabled={loading}
-                style={{
-                  background: '#0a0a0a',
-                  color: '#fff',
-                  border: 'none',
-                  padding: '0 28px',
-                  fontFamily: "var(--font-ibm-plex-mono), monospace",
-                  fontWeight: 700,
-                  fontSize: '11px',
-                  letterSpacing: '3px',
-                  textTransform: 'uppercase',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '10px',
-                  cursor: loading ? 'not-allowed' : 'pointer',
-                  opacity: loading ? 0.6 : 1
-                }}
-              >
-                Send →
-              </button>
+            <div style={{ borderTop: '1px solid #0a0a0a', background: '#fff' }}>
+              <div style={{ display: 'flex' }}>
+                <input
+                  type="text"
+                  placeholder="Type your reply…"
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && handleSend()}
+                  style={{
+                    flex: 1,
+                    border: 'none',
+                    padding: '18px 20px',
+                    fontFamily: "var(--font-ibm-plex-mono), monospace",
+                    fontSize: '14px',
+                    outline: 'none',
+                    background: 'transparent'
+                  }}
+                />
+                <button
+                  onClick={handleSend}
+                  disabled={loading}
+                  style={{
+                    background: loading ? '#555' : '#0D6EFD',
+                    color: '#fff',
+                    border: 'none',
+                    padding: '0 28px',
+                    fontFamily: "var(--font-ibm-plex-mono), monospace",
+                    fontWeight: 700,
+                    fontSize: '11px',
+                    letterSpacing: '3px',
+                    textTransform: 'uppercase',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px',
+                    cursor: loading ? 'not-allowed' : 'pointer',
+                    transition: 'background 150ms ease, opacity 150ms ease',
+                    opacity: loading ? 0.7 : 1
+                  }}
+                >
+                  {loading ? '···' : 'Send →'}
+                </button>
+              </div>
+              <div style={{ padding: '4px 20px 10px', fontSize: '10px', color: '#999', fontFamily: "var(--font-ibm-plex-mono), monospace" }}>
+                Your conversation is confidential. Used only to understand your needs.
+              </div>
             </div>
             ) : isConfirmed ? (
               <div style={{ borderTop: '1px solid #0a0a0a', padding: '16px 20px', background: '#fff', fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: '11px', letterSpacing: '2px', color: '#666', textAlign: 'center' }}>
@@ -354,6 +363,7 @@ export default function Contact() {
               </div>
             )}
           </div>
+          </div> {/* end right column */}
         </div>
       </section>
 

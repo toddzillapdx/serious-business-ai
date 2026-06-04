@@ -10,6 +10,9 @@ module.exports = {
         'sb-black': '#000000',
         'sb-white': '#FFFFFF',
         'sb-gray': '#888888',
+        'accent-blue': '#0D6EFD',
+        'accent-green': '#20C997',
+        'accent-purple': '#6F42C1',
       },
       fontFamily: {
         'exo': ['var(--font-exo2)', 'Exo 2', 'sans-serif'],

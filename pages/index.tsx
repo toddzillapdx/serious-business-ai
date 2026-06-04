@@ -1,27 +1,10 @@
-import Link from 'next/link';
+import Nav from '../components/Nav';
 
 export default function Home() {
   return (
     <div className="bg-white text-[#0a0a0a]" style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: '14px', lineHeight: '1.6' }}>
 
-      {/* NAV */}
-      <header className="flex items-center justify-between border-b border-[#ccc] bg-white px-4 md:px-8" style={{ height: '72px' }}>
-        <div className="flex items-center gap-3">
-          <div className="flex items-center justify-center w-9 h-9 bg-black text-white" style={{ fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, fontSize: '14px', letterSpacing: '-0.5px' }}>SB</div>
-          <div>
-            <div style={{ fontFamily: "var(--font-exo2), sans-serif", fontWeight: 900, fontSize: '16px', letterSpacing: '-0.5px' }}>SERIOUS BUSINESS</div>
-            <div style={{ fontSize: '9px', letterSpacing: '3px', color: '#666', marginTop: '2px' }}>EST. 2026 — PORTLAND, OR</div>
-          </div>
-        </div>
-        <nav className="hidden md:flex items-center gap-8" style={{ listStyle: 'none' }}>
-          <a href="#about" style={{ fontSize: '13px', color: '#0a0a0a', textDecoration: 'none' }}>About</a>
-          <a href="#caps" style={{ fontSize: '13px', color: '#0a0a0a', textDecoration: 'none' }}>Capabilities</a>
-          <a href="#services" style={{ fontSize: '13px', color: '#0a0a0a', textDecoration: 'none' }}>Services</a>
-          <a href="#manifesto" style={{ fontSize: '13px', color: '#0a0a0a', textDecoration: 'none' }}>Principles</a>
-          <a href="/contact" style={{ fontSize: '13px', color: '#0a0a0a', textDecoration: 'none' }}>Contact</a>
-        </nav>
-        <a href="/contact" className="inline-flex items-center gap-2" style={{ background: '#000', color: '#fff', padding: '10px 18px', fontSize: '12px', fontWeight: 700, letterSpacing: '2px', textDecoration: 'none', textTransform: 'uppercase' }}>Let's Talk →</a>
-      </header>
+      <Nav />
 
       {/* HERO */}
       <section className="px-4 md:px-8 pt-12 md:pt-20 pb-10 md:pb-16 border-b border-[#ccc] max-w-[1280px] mx-auto">
