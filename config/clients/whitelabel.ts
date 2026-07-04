@@ -10,6 +10,8 @@ const config = {
     primaryColor: "#111111",
     accentColor: "#333333",
     backgroundColor: "#ffffff",
+    logoUrl: "",
+    headerStyle: "dark",
   },
   greeting: "Hey — I'm LocalChat. Tell me what you need help with.",
   closingPhrases: [
