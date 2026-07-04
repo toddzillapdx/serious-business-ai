@@ -3,7 +3,7 @@ const config = {
   businessName: "Serious Business",
   operatorName: "Todd",
   operatorTitle: "Todd",
-  notificationEmail: process.env.NOTIFICATION_EMAIL || "",
+  notificationEmail: process.env.TODD_EMAIL || "",
   followUpTimeframe: "one business day",
   greeting: "Hey — I'm SeriousBot. Tell me what's not working, or what you're trying to build.",
   collectPhone: false,
