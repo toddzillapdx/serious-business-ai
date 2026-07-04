@@ -44,3 +44,4 @@ NOTIFICATION_EMAIL=todd@seriousbusiness.ai
 - Push to dev → Vercel preview auto-deploys
 - Push to main → Vercel production auto-deploys
 - No manual steps required
+# Test rebuild
