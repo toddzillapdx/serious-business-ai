@@ -26,6 +26,7 @@ const CLIENT_LOADERS: Record<string, () => Promise<{ default: ClientConfig }>> =
   seriousbusiness: () => import('../config/clients/seriousbusiness'),
   ottomanempire: () => import('../config/clients/ottomanempire'),
   offthehook: () => import('../config/clients/offthehook'),
+  whitelabel: () => import('../config/clients/whitelabel'),
 };
 
 interface Message {
@@ -59,6 +60,7 @@ export default function Chat() {
   const [editPhone, setEditPhone] = useState('');
   const [clientId, setClientId] = useState('');
   const [sessionTime, setSessionTime] = useState('');
+  const [questionCount, setQuestionCount] = useState(0);
   const chatBodyRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -199,9 +201,9 @@ export default function Chat() {
         <title>{config.botName} — {config.businessName}</title>
         <link rel="icon" href={branding.faviconUrl || '/favicon.ico'} />
       </Head>
-      <div style={{ minHeight: '100vh', background: branding.backgroundColor, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: '14px', lineHeight: '1.6', padding: '24px' }}>
-        <div style={{ width: '100%', maxWidth: '640px' }}>
-          <div style={{ border: '1px solid #0a0a0a', background: '#fff', display: 'flex', flexDirection: 'column', height: '560px' }}>
+      <div style={{ minHeight: '100vh', background: branding.backgroundColor, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: '14px', lineHeight: '1.6', padding: '16px 8px', '@media (min-width: 768px)': { padding: '24px' } }}>
+        <div style={{ width: '100%', maxWidth: '600px' }}>
+          <div style={{ border: '1px solid #0a0a0a', background: '#fff', display: 'flex', flexDirection: 'column', height: '640px', '@media (max-height: 700px)': { height: '100vh' } }}>
             {/* Chat Header */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 20px', borderBottom: '1px solid #0a0a0a', background: branding.primaryColor, color: '#fff' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -252,51 +254,57 @@ export default function Chat() {
               )}
             </div>
 
-            {/* Chat Input / Confirmation / Done */}
+            {/* Chat Input */}
             {!isComplete ? (
-              <div style={{ display: 'flex', borderTop: '1px solid #0a0a0a', background: '#fff' }}>
-                <input
-                  type="text"
-                  placeholder="Type your reply…"
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-                  style={{
-                    flex: 1,
-                    border: 'none',
-                    padding: '18px 20px',
-                    fontFamily: "var(--font-ibm-plex-mono), monospace",
-                    fontSize: '14px',
-                    outline: 'none',
-                    background: 'transparent',
-                  }}
-                />
-                <button
-                  onClick={handleSend}
-                  disabled={loading}
-                  style={{
-                    background: branding.primaryColor,
-                    color: '#fff',
-                    border: 'none',
-                    padding: '0 28px',
-                    fontFamily: "var(--font-ibm-plex-mono), monospace",
-                    fontWeight: 700,
-                    fontSize: '11px',
-                    letterSpacing: '3px',
-                    textTransform: 'uppercase',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '10px',
-                    cursor: loading ? 'not-allowed' : 'pointer',
-                    opacity: loading ? 0.6 : 1,
-                  }}
-                >
-                  Send →
-                </button>
+              <div style={{ display: 'flex', flexDirection: 'column', borderTop: '1px solid #0a0a0a', background: '#fff' }}>
+                <div style={{ display: 'flex', borderBottom: '1px solid #0a0a0a' }}>
+                  <input
+                    type="text"
+                    placeholder="Type or tap a quick reply…"
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && handleSend()}
+                    style={{
+                      flex: 1,
+                      border: 'none',
+                      padding: '16px',
+                      fontFamily: "var(--font-ibm-plex-mono), monospace",
+                      fontSize: '16px',
+                      outline: 'none',
+                      background: 'transparent',
+                    }}
+                  />
+                  <button
+                    onClick={handleSend}
+                    disabled={loading || !input.trim()}
+                    style={{
+                      background: branding.primaryColor,
+                      color: '#fff',
+                      border: 'none',
+                      padding: '0 20px',
+                      fontFamily: "var(--font-ibm-plex-mono), monospace",
+                      fontWeight: 700,
+                      fontSize: '12px',
+                      letterSpacing: '2px',
+                      textTransform: 'uppercase',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      cursor: loading ? 'not-allowed' : 'pointer',
+                      opacity: loading || !input.trim() ? 0.5 : 1,
+                      minWidth: '60px',
+                    }}
+                  >
+                    Send
+                  </button>
+                </div>
               </div>
             ) : isConfirmed ? (
-              <div style={{ borderTop: '1px solid #0a0a0a', padding: '16px 20px', background: '#fff', fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: '11px', letterSpacing: '2px', color: '#666', textAlign: 'center' }}>
-                SENT — {config.operatorName.toUpperCase()} WILL REACH OUT TO {capturedEmail.toUpperCase()}
+              <div style={{ borderTop: '1px solid #0a0a0a', padding: '20px', background: '#fff', fontFamily: "var(--font-ibm-plex-mono), monospace", textAlign: 'center' }}>
+                <div style={{ fontSize: '12px', letterSpacing: '2px', color: '#000', marginBottom: '8px', fontWeight: 700, textTransform: 'uppercase' }}>✓ Intake Submitted</div>
+                <div style={{ fontSize: '13px', lineHeight: '1.6', color: '#666' }}>
+                  Your information has been received. {config.operatorName} will review and reach out within {config.followUpTimeframe}.
+                </div>
               </div>
             ) : (
               <div style={{ borderTop: '1px solid #0a0a0a', background: '#fff', padding: '16px 20px' }}>
