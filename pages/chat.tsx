@@ -201,9 +201,20 @@ export default function Chat() {
         <title>{config.botName} — {config.businessName}</title>
         <link rel="icon" href={branding.faviconUrl || '/favicon.ico'} />
       </Head>
-      <div style={{ minHeight: '100vh', background: branding.backgroundColor, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: '14px', lineHeight: '1.6', padding: '16px 8px', '@media (min-width: 768px)': { padding: '24px' } }}>
+      <style>{`
+        @media (max-width: 767px) {
+          .chat-container { padding: 16px 8px !important; }
+        }
+        @media (min-width: 768px) {
+          .chat-container { padding: 24px !important; }
+        }
+        @media (max-height: 700px) {
+          .chat-box { height: 100vh !important; }
+        }
+      `}</style>
+      <div className="chat-container" style={{ minHeight: '100vh', background: branding.backgroundColor, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: '14px', lineHeight: '1.6', padding: '24px' }}>
         <div style={{ width: '100%', maxWidth: '600px' }}>
-          <div style={{ border: '1px solid #0a0a0a', background: '#fff', display: 'flex', flexDirection: 'column', height: '640px', '@media (max-height: 700px)': { height: '100vh' } }}>
+          <div className="chat-box" style={{ border: '1px solid #0a0a0a', background: '#fff', display: 'flex', flexDirection: 'column', height: '640px' }}>
             {/* Chat Header */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 20px', borderBottom: '1px solid #0a0a0a', background: branding.primaryColor, color: '#fff' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
