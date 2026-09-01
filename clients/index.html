@@ -1,1 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Serious Business AI</title>
+<style>
+  :root {
+    --ink: #14171a;
+    --ink-soft: #5a616b;
+    --paper: #f2f1ee;
+    --line: #d8d6d0;
+    --accent: #2f5dff;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+  }
+  header {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 64px 24px 32px;
+  }
+  h1 {
+    font-size: 2rem;
+    margin: 0 0 8px;
+    letter-spacing: -0.02em;
+  }
+  header p {
+    color: var(--ink-soft);
+    margin: 0;
+    max-width: 46ch;
+  }
+  main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 24px 64px;
+  }
+  ul.clients {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--line);
+  }
+  ul.clients li {
+    border-bottom: 1px solid var(--line);
+  }
+  ul.clients a {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+    padding: 18px 4px;
+    color: var(--ink);
+    text-decoration: none;
+  }
+  ul.clients a:hover {
+    color: var(--accent);
+  }
+  .client-name {
+    font-size: 1.05rem;
+  }
+  .client-desc {
+    color: var(--ink-soft);
+    font-size: 0.9rem;
+    text-align: right;
+  }
+  footer {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 24px 48px;
+    color: var(--ink-soft);
+    font-size: 0.85rem;
+  }
+</style>
+</head>
+<body>
 
+<header>
+  <h1>Clients</h1>
+  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Placeholder copy — real project pages go here.</p>
+</header>
+
+<main>
+  <ul class="clients">
+    <li>
+      <a href="clients/lorem-ipsum-co/">
+        <span class="client-name">Lorem Ipsum Co.</span>
+        <span class="client-desc">Sed do eiusmod tempor incididunt</span>
+      </a>
+    </li>
+    <li>
+      <a href="clients/dolor-sit-amet/">
+        <span class="client-name">Dolor Sit Amet Inc.</span>
+        <span class="client-desc">Ut labore et dolore magna aliqua</span>
+      </a>
+    </li>
+    <li>
+      <a href="clients/consectetur-ltd/">
+        <span class="client-name">Consectetur Ltd.</span>
+        <span class="client-desc">Ut enim ad minim veniam</span>
+      </a>
+    </li>
+    <li>
+      <a href="clients/adipiscing-group/">
+        <span class="client-name">Adipiscing Group</span>
+        <span class="client-desc">Quis nostrud exercitation ullamco</span>
+      </a>
+    </li>
+  </ul>
+</main>
+
+<footer>
+  Placeholder page — content to be replaced.
+</footer>
+
+</body>
+</html>
