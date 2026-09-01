@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Padel School — US Expansion Brief</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black: #0a0a0a;
+    --white: #ffffff;
+    --off-white: #f5f5f3;
+    --gray-light: #e8e8e6;
+    --gray-mid: #999;
+    --gray-dark: #444;
+    --accent: #2ecc71;
+    --accent-dim: #1a7a43;
+    --rule: #222;
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--white);
+    color: var(--black);
+    font-size: 13px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 0 80px;
+  }
+
+  /* ─── HEADER ─── */
+  .header {
+    background: var(--black);
+    padding: 40px 48px 36px;
+    border-bottom: 3px solid var(--accent);
+  }
+
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 28px;
+  }
+
+  .sb-wordmark {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gray-mid);
+  }
+
+  .sb-wordmark span {
+    color: var(--accent);
+  }
+
+  .header-meta {
+    text-align: right;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gray-mid);
+    line-height: 1.8;
+  }
+
+  .header h1 {
+    font-size: 38px;
+    font-weight: 900;
+    color: var(--white);
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    margin-bottom: 14px;
+    max-width: 640px;
+  }
+
+  .header-sub {
+    font-size: 13px;
+    color: var(--gray-mid);
+    font-weight: 400;
+    border-top: 1px solid var(--rule);
+    padding-top: 16px;
+    display: flex;
+    gap: 32px;
+  }
+
+  .header-sub span {
+    color: var(--white);
+    font-weight: 600;
+  }
+
+  /* ─── SECTION CHROME ─── */
+  .section {
+    padding: 40px 48px;
+    border-bottom: 1px solid var(--gray-light);
+  }
+
+  .section:last-child {
+    border-bottom: none;
+  }
+
+  .section-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gray-mid);
+    margin-bottom: 6px;
+  }
+
+  .section-counter {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    float: right;
+  }
+
+  .section h2 {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    color: var(--black);
+    margin-bottom: 20px;
+    line-height: 1.15;
+  }
+
+  /* ─── LANDSCAPE OVERVIEW ─── */
+  .landscape-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--gray-light);
+    border: 1px solid var(--gray-light);
+    margin-bottom: 28px;
+  }
+
+  .landscape-cell {
+    background: var(--white);
+    padding: 18px 20px;
+  }
+
+  .landscape-cell .lc-label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gray-mid);
+    margin-bottom: 6px;
+  }
+
+  .landscape-cell .lc-tool {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--black);
+    margin-bottom: 3px;
+  }
+
+  .landscape-cell .lc-note {
+    font-size: 11px;
+    color: var(--gray-dark);
+    line-height: 1.5;
+  }
+
+  .landscape-cell.flag .lc-tool {
+    color: #c0392b;
+  }
+
+  .landscape-cell.flag .lc-label {
+    color: #c0392b;
+  }
+
+  .landscape-cell.flag {
+    background: #fdf5f5;
+  }
+
+  /* ─── STATS ROW ─── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--black);
+    border: 1px solid var(--black);
+    margin-bottom: 28px;
+  }
+
+  .stat-cell {
+    background: var(--black);
+    padding: 16px 20px;
+    text-align: left;
+  }
+
+  .stat-num {
+    font-size: 22px;
+    font-weight: 900;
+    color: var(--accent);
+    letter-spacing: -0.02em;
+    display: block;
+  }
+
+  .stat-label {
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--gray-mid);
+    margin-top: 2px;
+  }
+
+  /* ─── RULE LIST ─── */
+  .rule-list {
+    list-style: none;
+    border-top: 1px solid var(--gray-light);
+  }
+
+  .rule-list li {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--gray-light);
+    font-size: 13px;
+    color: var(--gray-dark);
+    line-height: 1.55;
+  }
+
+  .rule-list li .marker {
+    font-size: 11px;
+    font-weight: 700;
+    flex-shrink: 0;
+    width: 18px;
+    padding-top: 1px;
+  }
+
+  .rule-list li strong {
+    color: var(--black);
+    font-weight: 600;
+  }
+
+  .rule-list li .marker.green { color: var(--accent); }
+  .rule-list li .marker.red { color: #c0392b; }
+  .rule-list li .marker.yellow { color: #e67e22; }
+
+  /* ─── TWO-COLUMN STACK ─── */
+  .stack-compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border: 1px solid var(--gray-light);
+  }
+
+  .stack-col {
+    padding: 0;
+  }
+
+  .stack-col-header {
+    padding: 14px 20px;
+    border-bottom: 2px solid var(--black);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .stack-col:first-child .stack-col-header {
+    background: var(--off-white);
+    border-right: 1px solid var(--gray-light);
+  }
+
+  .stack-col:last-child .stack-col-header {
+    background: var(--black);
+  }
+
+  .stack-col-header .col-title {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .stack-col:first-child .col-title { color: var(--gray-dark); }
+  .stack-col:last-child .col-title { color: var(--accent); }
+
+  .stack-col-header .col-sub {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .stack-col:first-child .col-sub { color: var(--gray-mid); }
+  .stack-col:last-child .col-sub { color: rgba(255,255,255,0.4); }
+
+  .stack-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .stack-cell {
+    padding: 13px 20px;
+    border-bottom: 1px solid var(--gray-light);
+    border-right: 1px solid var(--gray-light);
+  }
+
+  .stack-cell:nth-child(2n) {
+    border-right: none;
+    background: #fafff8;
+  }
+
+  .stack-cell .sc-layer {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gray-mid);
+    margin-bottom: 3px;
+  }
+
+  .stack-cell .sc-tool {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--black);
+    margin-bottom: 2px;
+  }
+
+  .stack-cell .sc-note {
+    font-size: 11px;
+    color: var(--gray-dark);
+    line-height: 1.45;
+  }
+
+  .stack-cell.new .sc-tool {
+    color: var(--accent-dim);
+  }
+
+  .stack-cell.new .sc-layer {
+    color: var(--accent-dim);
+  }
+
+  .stack-cell.flag .sc-tool {
+    color: #c0392b;
+  }
+
+  .stack-cell.extend .sc-layer::after {
+    content: ' ↗ EXTEND';
+    color: var(--accent);
+    font-size: 8px;
+  }
+
+  .stack-cell.callout {
+    background: #fffbf0;
+    border-left: 3px solid #e67e22;
+  }
+
+  .stack-cell.callout .sc-layer {
+    color: #e67e22;
+  }
+
+  /* ─── AIRTABLE SETUP ─── */
+  .at-tables {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .at-table {
+    border: 1px solid var(--gray-light);
+    border-top: 3px solid var(--black);
+    padding: 16px 18px;
+  }
+
+  .at-table h4 {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--black);
+    margin-bottom: 8px;
+    letter-spacing: -0.01em;
+  }
+
+  .at-table ul {
+    list-style: none;
+  }
+
+  .at-table ul li {
+    font-size: 11px;
+    color: var(--gray-dark);
+    padding: 2px 0;
+    border-bottom: 1px solid var(--gray-light);
+  }
+
+  .at-table ul li:last-child { border-bottom: none; }
+
+  .at-table ul li code {
+    font-family: 'SF Mono', 'Fira Mono', monospace;
+    font-size: 10px;
+    background: var(--off-white);
+    padding: 1px 5px;
+    border-radius: 3px;
+    color: var(--black);
+  }
+
+  .flow-arrow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 16px 0;
+    font-size: 11px;
+    color: var(--gray-mid);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+  }
+
+  .flow-arrow .arrow-line {
+    flex: 1;
+    height: 1px;
+    background: var(--gray-light);
+  }
+
+  /* ─── CALLOUT BOX ─── */
+  .callout-box {
+    border: 1px solid #e67e22;
+    border-left: 4px solid #e67e22;
+    background: #fffbf0;
+    padding: 16px 20px;
+    margin-top: 16px;
+  }
+
+  .callout-box .cb-label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #e67e22;
+    margin-bottom: 6px;
+  }
+
+  .callout-box p {
+    font-size: 12px;
+    color: var(--gray-dark);
+    line-height: 1.6;
+  }
+
+  .callout-box strong { color: var(--black); }
+
+  /* ─── COST TABLE ─── */
+  .cost-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+    font-size: 12px;
+  }
+
+  .cost-table th {
+    text-align: left;
+    padding: 8px 12px;
+    background: var(--black);
+    color: var(--white);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .cost-table td {
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--gray-light);
+    color: var(--gray-dark);
+    vertical-align: top;
+  }
+
+  .cost-table td:first-child { font-weight: 600; color: var(--black); }
+  .cost-table td:last-child { font-weight: 700; color: var(--black); }
+
+  .cost-table tr.total td {
+    background: var(--off-white);
+    font-weight: 700;
+    color: var(--black);
+    border-top: 2px solid var(--black);
+  }
+
+  /* ─── QUESTIONS ─── */
+  .q-list {
+    list-style: none;
+    counter-reset: qc;
+  }
+
+  .q-list li {
+    counter-increment: qc;
+    display: flex;
+    gap: 14px;
+    padding: 11px 0;
+    border-bottom: 1px solid var(--gray-light);
+    font-size: 13px;
+    color: var(--gray-dark);
+    line-height: 1.55;
+    align-items: flex-start;
+  }
+
+  .q-list li:last-child { border-bottom: none; }
+
+  .q-list li::before {
+    content: "0" counter(qc);
+    font-size: 10px;
+    font-weight: 700;
+    background: var(--black);
+    color: var(--accent);
+    padding: 3px 7px;
+    flex-shrink: 0;
+    letter-spacing: 0.06em;
+    margin-top: 1px;
+  }
+
+  .q-list li strong { color: var(--black); font-weight: 600; }
+  .q-list li em { font-style: italic; color: var(--gray-mid); font-size: 11px; }
+
+  /* ─── NEXT STEPS ─── */
+  .steps-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--gray-light);
+    border: 1px solid var(--gray-light);
+  }
+
+  .step {
+    background: var(--white);
+    padding: 18px 20px;
+  }
+
+  .step .step-num {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+
+  .step h4 {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--black);
+    margin-bottom: 6px;
+    letter-spacing: -0.01em;
+  }
+
+  .step p {
+    font-size: 11px;
+    color: var(--gray-dark);
+    line-height: 1.55;
+  }
+
+  /* ─── FOOTER ─── */
+  .footer {
+    background: var(--black);
+    padding: 18px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer .f-left {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gray-mid);
+  }
+
+  .footer .f-left span { color: var(--accent); }
+
+  .footer .f-right {
+    font-size: 10px;
+    color: var(--gray-mid);
+    letter-spacing: 0.06em;
+  }
+
+  /* ─── PILLS ─── */
+  .pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 12px;
+  }
+
+  .pill {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 10px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border: 1px solid var(--gray-light);
+    color: var(--gray-dark);
+  }
+
+  @media print {
+    body { background: #fff; }
+    .page { max-width: 100%; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ─── HEADER ─── -->
+  <div class="header">
+    <div class="header-top">
+      <div class="sb-wordmark"><span>SB</span> SERIOUS BUSINESS — EST. 2026 — PORTLAND, OR</div>
+      <div class="header-meta">
+        September 2026<br>
+        Draft — Gina Review<br>
+        Confidential
+      </div>
+    </div>
+    <h1>The Padel School<br>US Expansion</h1>
+    <div class="header-sub">
+      <div>Prepared by <span>Todd Ames</span></div>
+      <div>Focus <span>Martech · Community · Efficiency</span></div>
+      <div>Sources <span>thepadelschool.com · padelusa.org · live stack audit</span></div>
+    </div>
+  </div>
+
+  <!-- ─── 01 BUSINESS LANDSCAPE OVERVIEW ─── -->
+  <div class="section">
+    <div class="section-label">01 <span class="section-counter">Business Landscape</span></div>
+    <h2>Who They Are</h2>
+
+    <div class="stats-row">
+      <div class="stat-cell">
+        <span class="stat-num">125k+</span>
+        <span class="stat-label">Social Followers</span>
+      </div>
+      <div class="stat-cell">
+        <span class="stat-num">100m+</span>
+        <span class="stat-label">Content Views</span>
+      </div>
+      <div class="stat-cell">
+        <span class="stat-num">97k+</span>
+        <span class="stat-label">Player Transformations</span>
+      </div>
+      <div class="stat-cell">
+        <span class="stat-num">90+</span>
+        <span class="stat-label">US Clubs (addressable)</span>
+      </div>
+    </div>
+
+    <p style="font-size:13px; color:#444; max-width:720px; margin-bottom:20px; line-height:1.7;">
+      Founded by two UK-based brothers. Online-first padel coaching platform — subscription membership model. Core product is digital coaching: on-demand courses, personalized training roadmaps, video feedback from coaches, and a private member community on Circle.so. Secondary revenue through in-person events, padel holidays, global academies, and an e-commerce shop. No current US presence — all pricing in GBP.
+    </p>
+
+    <div class="landscape-grid">
+      <div class="landscape-cell">
+        <div class="lc-label">Business Model</div>
+        <div class="lc-tool">B2C Subscription</div>
+        <div class="lc-note">Monthly/annual membership. 7-day free trial. All tiers in GBP.</div>
+      </div>
+      <div class="landscape-cell">
+        <div class="lc-label">B2B Arm</div>
+        <div class="lc-tool">Club Support + Events</div>
+        <div class="lc-note">Club content licensing, player clinics, corporate days, padel holidays.</div>
+      </div>
+      <div class="landscape-cell">
+        <div class="lc-label">Content Reach</div>
+        <div class="lc-tool">YouTube-First</div>
+        <div class="lc-note">100m+ views. Also active on Instagram, TikTok, Facebook, LinkedIn, X.</div>
+      </div>
+      <div class="landscape-cell">
+        <div class="lc-label">Community Platform</div>
+        <div class="lc-tool">Circle.so ✓</div>
+        <div class="lc-note">Branded as community.thepadelschool.com. Right platform for the model.</div>
+      </div>
+      <div class="landscape-cell">
+        <div class="lc-label">Physical Presence</div>
+        <div class="lc-tool">4 Global Academies</div>
+        <div class="lc-note">South Africa, UK + 2 others. No US physical presence yet.</div>
+      </div>
+      <div class="landscape-cell flag">
+        <div class="lc-label">US Gap</div>
+        <div class="lc-tool">Zero US Infrastructure</div>
+        <div class="lc-note">No USD pricing, no US checkout tier, no US email segmentation, no US club relationships.</div>
+      </div>
+    </div>
+
+    <p style="font-size:13px; color:#444; max-width:720px; line-height:1.7;">
+      <strong>The US opportunity:</strong> 90+ registered padel clubs across 25 states. No dominant online padel instruction platform exists in the US market. The Padel School is positioned to be first — with European credibility as a differentiator. USA Padel (the national governing body) has an "Endorsed Coaching Partner" designation — the single highest-leverage unlock for US distribution.
+    </p>
+
+    <div class="pills">
+      <span class="pill">First-mover advantage</span>
+      <span class="pill">European credibility</span>
+      <span class="pill">Club B2B channel</span>
+      <span class="pill">Coach cert gap</span>
+      <span class="pill">Affiliate infra live</span>
+      <span class="pill">Circle already right</span>
+    </div>
+  </div>
+
+  <!-- ─── 02 STACK COMPARISON ─── -->
+  <div class="section">
+    <div class="section-label">02 <span class="section-counter">Martech Stack</span></div>
+    <h2>Current Setup vs. US-Focused Stack</h2>
+
+    <div class="stack-compare">
+      <!-- HEADERS -->
+      <div class="stack-col-header" style="background:#f5f5f3; border-right: 1px solid #e8e8e6;">
+        <div class="col-title" style="color:#444;">Current — Global Operation</div>
+        <div class="col-sub" style="color:#999;">As-is today</div>
+      </div>
+      <div class="stack-col-header" style="background:#0a0a0a;">
+        <div class="col-title" style="color:#2ecc71;">US Expansion Layer</div>
+        <div class="col-sub" style="color:rgba(255,255,255,0.4);">Add / modify / activate</div>
+      </div>
+
+      <!-- ROW: Website -->
+      <div class="stack-cell">
+        <div class="sc-layer">Marketing Site</div>
+        <div class="sc-tool">Webflow</div>
+        <div class="sc-note">Clean, global. GBP pricing only. No US landing pages.</div>
+      </div>
+      <div class="stack-cell extend">
+        <div class="sc-layer">Marketing Site</div>
+        <div class="sc-tool">Webflow — US page variant</div>
+        <div class="sc-note">Add US-specific landing page. USD messaging. Cloudflare Worker already handles geo-routing — just needs a US branch.</div>
+      </div>
+
+      <!-- ROW: Member Portal -->
+      <div class="stack-cell">
+        <div class="sc-layer">Member Portal</div>
+        <div class="sc-tool">WordPress + MemberPress</div>
+        <div class="sc-note">Geo-routed checkout tiers: UK, Europe 1/2/3, Default. No US tier.</div>
+      </div>
+      <div class="stack-cell extend">
+        <div class="sc-layer">Member Portal</div>
+        <div class="sc-tool">MemberPress — US tier</div>
+        <div class="sc-note">Add USD pricing tier. Update Cloudflare Worker to route US IPs. Mirror conversion event to GTM for US attribution.</div>
+      </div>
+
+      <!-- ROW: Community -->
+      <div class="stack-cell">
+        <div class="sc-layer">Community</div>
+        <div class="sc-tool">Circle.so ✓</div>
+        <div class="sc-note">Right platform. Member courses, video coaching, monthly challenges. Note: pricing page still references old Facebook Group — stale copy to fix.</div>
+      </div>
+      <div class="stack-cell extend">
+        <div class="sc-layer">Community</div>
+        <div class="sc-tool">Circle.so — US spaces</div>
+        <div class="sc-note">Add US-specific content tracks and a Club Partner sub-space. US timezone moderation coverage needed. Fix stale Facebook copy on pricing page.</div>
+      </div>
+
+      <!-- ROW: Email/CRM -->
+      <div class="stack-cell">
+        <div class="sc-layer">Email + CRM</div>
+        <div class="sc-tool">ActiveCampaign</div>
+        <div class="sc-note">Already paid. Used for email + contact management. Likely underbuilt — lifecycle automations not confirmed. No US segmentation.</div>
+      </div>
+      <div class="stack-cell extend">
+        <div class="sc-layer">Email + CRM</div>
+        <div class="sc-tool">ActiveCampaign — US tracks</div>
+        <div class="sc-note">Build US onboarding sequence, club partner nurture track, 60-day re-engagement, paid member VIP track. Driven by Airtable cohorts via Zapier.</div>
+      </div>
+
+      <!-- ROW: CRM Hub NEW -->
+      <div class="stack-cell" style="background:#f5f5f3;">
+        <div class="sc-layer">Member Data Hub</div>
+        <div class="sc-tool" style="color:#999;">None</div>
+        <div class="sc-note">No unified member data layer. Circle and AC exist in silos.</div>
+      </div>
+      <div class="stack-cell new">
+        <div class="sc-layer">Member Data Hub — NEW</div>
+        <div class="sc-tool">Airtable</div>
+        <div class="sc-note">Free tier to start → Team ($20/seat) at 1k+ records. Single source of truth: reconciles Circle events + AC email engagement. Zapier is the glue.</div>
+      </div>
+
+      <!-- ROW: Integration -->
+      <div class="stack-cell" style="background:#f5f5f3;">
+        <div class="sc-layer">Integration Layer</div>
+        <div class="sc-tool" style="color:#999;">None</div>
+        <div class="sc-note">No automated data flow between Circle, AC, and a CRM.</div>
+      </div>
+      <div class="stack-cell new">
+        <div class="sc-layer">Integration Layer — NEW</div>
+        <div class="sc-tool">Zapier</div>
+        <div class="sc-note">~$20/month. Connects Circle → Airtable, AC → Airtable, Airtable cohorts → AC tags. Validate Circle Zapier triggers before committing.</div>
+      </div>
+
+      <!-- ROW: Reporting -->
+      <div class="stack-cell">
+        <div class="sc-layer">Analytics</div>
+        <div class="sc-tool">GA4 + GTM</div>
+        <div class="sc-note">Standard setup. No US-specific goals, audiences, or conversion tracking. No unified reporting across member + email data.</div>
+      </div>
+      <div class="stack-cell new">
+        <div class="sc-layer">Reporting — NEW</div>
+        <div class="sc-tool">Looker Studio</div>
+        <div class="sc-note">Free. Connects GA4 + Airtable + AC in one weekly dashboard. New members, event attendance, email engagement, traffic by channel. Replaces manual reporting.</div>
+      </div>
+
+      <!-- ROW: E-commerce -->
+      <div class="stack-cell">
+        <div class="sc-layer">E-commerce</div>
+        <div class="sc-tool">Shopify</div>
+        <div class="sc-note">shop.thepadelschool.com. Books + gear. Full payments suite incl. Apple Pay, Shop Pay, PayPal. USD-capable.</div>
+      </div>
+      <div class="stack-cell">
+        <div class="sc-layer">E-commerce</div>
+        <div class="sc-tool">Shopify — no change</div>
+        <div class="sc-note">Already USD-capable. No action needed at launch. US-specific product bundles or club packs can be added later.</div>
+      </div>
+
+      <!-- ROW: Payments -->
+      <div class="stack-cell">
+        <div class="sc-layer">Payments</div>
+        <div class="sc-tool">Stripe + PayPal</div>
+        <div class="sc-note">Memberships via Stripe. USD-capable but no US pricing tier configured.</div>
+      </div>
+      <div class="stack-cell extend">
+        <div class="sc-layer">Payments</div>
+        <div class="sc-tool">Stripe — USD tier</div>
+        <div class="sc-note">No new tool. Configure US pricing tier in MemberPress → Stripe. Ensure conversion events fire back to GTM for US attribution.</div>
+      </div>
+
+      <!-- ROW: Affiliate -->
+      <div class="stack-cell">
+        <div class="sc-layer">Affiliate</div>
+        <div class="sc-tool">Rewardful</div>
+        <div class="sc-note">Stripe-native. Live but likely used for general affiliate tracking only. No US club partner program built on top.</div>
+      </div>
+      <div class="stack-cell callout">
+        <div class="sc-layer">⚠ Affiliate — ACTIVATE + CONNECT</div>
+        <div class="sc-tool">Rewardful → Airtable</div>
+        <div class="sc-note">Build formal US club referral program. Rewardful tracks conversions → Zapier → Airtable Club Partners table. Validate Rewardful Zapier trigger availability first.</div>
+      </div>
+
+      <!-- ROW: Attribution -->
+      <div class="stack-cell">
+        <div class="sc-layer">Paid Acquisition</div>
+        <div class="sc-tool" style="color:#999;">Not configured for US</div>
+        <div class="sc-note">GTM is live but no US Meta Pixel audiences, no Google Ads conversion tracking, no UTM strategy for US campaigns.</div>
+      </div>
+      <div class="stack-cell new">
+        <div class="sc-layer">US Attribution — CONFIGURE</div>
+        <div class="sc-tool">GTM — US audiences</div>
+        <div class="sc-note">No new tool. Configure US Meta Pixel audiences + Google Ads conversion tracking via existing GTM. UTM params on all US campaign URLs captured in AC on signup.</div>
+      </div>
+
+      <!-- ROW: Support -->
+      <div class="stack-cell">
+        <div class="sc-layer">Customer Support</div>
+        <div class="sc-tool" style="color:#999;">Contact form only</div>
+        <div class="sc-note">No helpdesk or shared inbox. Doesn't scale for US club partnership management.</div>
+      </div>
+      <div class="stack-cell new">
+        <div class="sc-layer">Support — NEW (pre-launch)</div>
+        <div class="sc-tool">Help Scout or Front</div>
+        <div class="sc-note">~$20/month. Lightweight shared inbox for US club partner + member support. Add before US club outreach begins.</div>
+      </div>
+
+    </div><!-- end stack-compare -->
+
+    <!-- Cost summary -->
+    <div style="margin-top: 24px;">
+      <table class="cost-table">
+        <thead>
+          <tr>
+            <th>Tool</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>Cost</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Airtable</td>
+            <td>Member data hub</td>
+            <td>New</td>
+            <td>Free → $20/seat/mo</td>
+          </tr>
+          <tr>
+            <td>Zapier</td>
+            <td>Integration glue</td>
+            <td>New</td>
+            <td>~$20/mo</td>
+          </tr>
+          <tr>
+            <td>Looker Studio</td>
+            <td>Reporting dashboard</td>
+            <td>New</td>
+            <td>Free</td>
+          </tr>
+          <tr>
+            <td>Help Scout / Front</td>
+            <td>US support inbox</td>
+            <td>New (pre-launch)</td>
+            <td>~$20/mo</td>
+          </tr>
+          <tr>
+            <td>ActiveCampaign</td>
+            <td>Email + lifecycle</td>
+            <td>Already paid</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td>Circle.so</td>
+            <td>Member community</td>
+            <td>Already paid</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td>Rewardful</td>
+            <td>Club referral tracking</td>
+            <td>Already paid — activate</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td>GTM / GA4 / Looker Studio</td>
+            <td>Analytics + attribution</td>
+            <td>Configure existing</td>
+            <td>Free</td>
+          </tr>
+          <tr class="total">
+            <td>Total new monthly spend</td>
+            <td></td>
+            <td></td>
+            <td>~$40–60/mo to start</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout-box" style="margin-top:16px;">
+      <div class="cb-label">⚠ Rewardful Validation Required</div>
+      <p>Rewardful is confirmed live on the site (Stripe-native). Before committing the Rewardful → Zapier → Airtable flow to the client, verify that <strong>Rewardful has a native Zapier app</strong> and that the specific trigger events needed (new conversion, new referral) are available. If not, fallback is Rewardful webhook → Zapier Catch Hook → Airtable — still doable, slightly more fragile.</p>
+    </div>
+
+    <div class="callout-box" style="margin-top:10px; border-color:#2980b9; background:#f0f6ff;">
+      <div class="cb-label" style="color:#2980b9;">⚠ Circle Zapier Trigger Validation Required</div>
+      <p>The Event Attendance flow depends on Circle exposing event registration as a Zapier trigger. <strong>Confirm Circle's Zapier trigger list</strong> against the specific events being captured (new member join, event registration, event attendance). If event attendance isn't a native trigger, fallback is Circle webhooks → Zapier Catch Hook → Airtable.</p>
+    </div>
+
+  </div>
+
+  <!-- ─── 03 QUESTIONS FOR GINA ─── -->
+  <div class="section">
+    <div class="section-label">03 <span class="section-counter">Alignment</span></div>
+    <h2>Questions for Gina</h2>
+    <ol class="q-list">
+      <li><strong>What's the client's primary US goal — and on what timeline?</strong> Digital membership growth, physical academy, or club partnerships first? Entry sequence changes significantly depending on the answer.</li>
+      <li><strong>What's the current state of brand positioning for a US audience?</strong> Existing US-facing messaging, or built from scratch? <em>Directly in Gina's lane — shapes the martech content strategy.</em></li>
+      <li><strong>How strong is the USA Padel relationship?</strong> Warm intro or formal partnership conversation? Determines how aggressively we scope the distribution strategy around it.</li>
+      <li><strong>What's the client's budget signal for US setup?</strong> Advisory only, or are they expecting a build estimate? Shapes whether we present options or a single recommended path.</li>
+      <li><strong>Who owns community management on their side?</strong> US timezone moderation is a real gap. Is there a US-based team member, or is this a hire/agency gap we flag?</li>
+      <li><strong>Are they open to AI augmentation?</strong> Coaching video analysis and email automation specifically. Some coaching brands are sensitive about AI touching the coaching product.</li>
+      <li><strong>What's Gina's read on the founders?</strong> Two brothers running a bootstrapped operation — operators who want a growth partner, or visionaries who need strategy translated into a buildable plan?</li>
+    </ol>
+  </div>
+
+  <!-- ─── 04 NEXT STEPS ─── -->
+  <div class="section">
+    <div class="section-label">04 <span class="section-counter">Next Steps</span></div>
+    <h2>Recommended Sequence</h2>
+    <div class="steps-grid">
+      <div class="step">
+        <div class="step-num">Step 01</div>
+        <h4>Align with Gina</h4>
+        <p>Confirm division of work. Todd owns martech + tech advisory. Gina owns brand, positioning, client relationship. Define deliverable format before client meeting.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">Step 02</div>
+        <h4>USA Padel Relationship</h4>
+        <p>Map the path to "Endorsed Coaching Partner" status with USA Padel. Highest-leverage distribution unlock. Needs to happen in parallel with all tech work.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">Step 03</div>
+        <h4>Validate Integrations</h4>
+        <p>Confirm Circle + Rewardful Zapier trigger availability before presenting the stack. Two callouts that need a real answer before committing to the architecture.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">Step 04</div>
+        <h4>US Stack Spec</h4>
+        <p>Produce a current-state vs. US-ready martech spec. What to add, configure, extend. Prioritized by impact/effort. This brief is the starting point.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">Step 05</div>
+        <h4>Efficiency Playbook</h4>
+        <p>5 automation wins: US onboarding sequence, club outreach, content repurposing pipeline, AI-assisted video coaching feedback, monthly challenge automation.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">Step 06</div>
+        <h4>Present to Client</h4>
+        <p>Gina leads. Todd supports with martech specifics and implementation scoping. If they want to build — sub to martech engineer.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── FOOTER ─── -->
+  <div class="footer">
+    <div class="f-left"><span>SB</span> Serious Business · Todd Ames · September 2026</div>
+    <div class="f-right">Draft — Internal Use · thepadelschool.com</div>
+  </div>
+
+</div>
+</body>
+</html>
